@@ -16,6 +16,7 @@ const defaultSettings: SiteSettings = {
   site_keywords: "blog, articles, technology",
   home_title: "Welcome to Lite Blog",
   home_subtitle: "Discover amazing articles and insights",
+  home_custom_content: "",
   footer_text: "Lite Blog. All rights reserved.",
   logo_url: "",
 };

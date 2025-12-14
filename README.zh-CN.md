@@ -210,6 +210,144 @@ npm run build
 npm start
 ```
 
+## Docker 部署
+
+项目提供单一 Docker 镜像，同时运行前端和后端服务。
+
+### 构建镜像
+
+```bash
+docker build -t lite-blog:latest .
+```
+
+### 运行容器
+
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -p 8080:8080 \
+  -e ADMIN_EMAIL=admin@example.com \
+  -e ADMIN_PASSWORD=your-secure-password \
+  -e JWT_SECRET=your-jwt-secret-key \
+  -v blog-data:/app/data \
+  --name lite-blog \
+  lite-blog:latest
+```
+
+启动后访问：
+- 前端：http://localhost:3000
+- 后端 API：http://localhost:8080
+
+### 环境变量
+
+| 变量 | 说明 | 默认值 |
+|------|------|--------|
+| `ADMIN_EMAIL` | 管理员邮箱（首次启动时创建） | - |
+| `ADMIN_PASSWORD` | 管理员密码（首次启动时创建） | - |
+| `JWT_SECRET` | JWT 密钥（生产环境必须修改） | `change-this-in-production` |
+| `DATABASE_PATH` | SQLite 数据库路径 | `/app/data/blog.db` |
+| `SERVER_PORT` | 后端服务端口 | `8080` |
+| `SERVER_MODE` | 运行模式 (debug/release) | `release` |
+| `CORS_ORIGINS` | 允许的跨域来源（逗号分隔） | `http://localhost:3000` |
+
+### 使用 docker-compose（推荐）
+
+这是最简单的部署方式，适合生产环境。
+
+**第一步：创建环境配置文件**
+
+```bash
+cp .env.example .env
+```
+
+**第二步：编辑 `.env` 文件**
+
+```bash
+# .env 文件内容示例
+
+# 必须修改：JWT 密钥（用于用户认证，请使用随机字符串）
+JWT_SECRET=your-super-secret-jwt-key-change-this
+
+# 可选：管理员账户（首次启动时自动创建）
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your-secure-admin-password
+
+# 可选：跨域配置（如果前端部署在其他域名）
+CORS_ORIGINS=http://localhost:3000
+
+# 可选：服务器配置
+SERVER_MODE=release
+```
+
+**第三步：启动服务**
+
+```bash
+# 构建并启动（首次运行）
+docker-compose up -d --build
+
+# 查看日志
+docker-compose logs -f
+
+# 停止服务
+docker-compose down
+
+# 重启服务
+docker-compose restart
+```
+
+**第四步：访问服务**
+
+- 前端：http://localhost:3000
+- 后端 API：http://localhost:8080
+- 使用 `.env` 中配置的管理员账户登录
+
+**常用命令**
+
+```bash
+# 查看运行状态
+docker-compose ps
+
+# 查看实时日志
+docker-compose logs -f
+
+# 进入容器调试
+docker exec -it lite-blog sh
+
+# 备份数据库
+docker cp lite-blog:/app/data/blog.db ./backup-$(date +%Y%m%d).db
+
+# 完全重建（清除缓存）
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+### 上传到 Docker Hub
+
+```bash
+# 登录
+docker login
+
+# 标记镜像
+docker tag lite-blog:latest your-username/lite-blog:latest
+
+# 推送
+docker push your-username/lite-blog:latest
+```
+
+### 从 Docker Hub 拉取并运行
+
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -p 8080:8080 \
+  -e ADMIN_EMAIL=admin@example.com \
+  -e ADMIN_PASSWORD=your-secure-password \
+  -e JWT_SECRET=your-jwt-secret-key \
+  -v blog-data:/app/data \
+  your-username/lite-blog:latest
+```
+
 ## 网站设置
 
 管理员可以在后台配置以下设置：

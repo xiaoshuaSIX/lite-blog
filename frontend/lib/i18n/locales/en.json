@@ -57,16 +57,130 @@
   },
   "admin": {
     "dashboard": "Dashboard",
+    "dashboardSubtitle": "Welcome back to your control center.",
     "articles": "Articles",
+    "articlesDesc": "Manage blog articles, create new posts, and control visibility settings.",
     "users": "Users",
-    "comments": "Comments",
+    "usersDesc": "Oversee user base, manage roles, and handle member subscriptions.",
     "settings": "Settings",
+    "settingsDesc": "Configure site metadata, customize homepage content, and SEO settings.",
     "newArticle": "New Article",
     "editArticle": "Edit Article",
+    "manageContent": "Manage Content",
+    "viewUsers": "View Users",
+    "configureSite": "Configure Site",
+    "quickActions": "Quick Actions",
+    "viewLiveSite": "View Live Site",
     "publish": "Publish",
     "unpublish": "Unpublish",
     "draft": "Draft",
-    "published": "Published"
+    "published": "Published",
+    "settingsPage": {
+      "basicInfo": "Basic Information",
+      "homepage": "Homepage",
+      "footer": "Footer",
+      "siteName": "Site Name",
+      "siteNameHint": "Displayed in the header and browser tab",
+      "siteDesc": "Site Description",
+      "siteDescHint": "Used for SEO meta description",
+      "siteKeywords": "Site Keywords",
+      "siteKeywordsHint": "Comma-separated keywords for SEO",
+      "logoUrl": "Logo URL",
+      "logoUrlHint": "Optional logo image URL",
+      "homeTitle": "Homepage Title",
+      "homeTitleHint": "Main title displayed on the homepage",
+      "homeSubtitle": "Homepage Subtitle",
+      "homeSubtitleHint": "Subtitle displayed below the main title",
+      "customContent": "Homepage Custom Content",
+      "customContentHint": "Custom text displayed below the subtitle. Supports multiple lines.",
+      "footerText": "Footer Text",
+      "footerTextHint": "Copyright or footer text",
+      "saveSettings": "Save Settings",
+      "saving": "Saving...",
+      "success": "Settings saved successfully!"
+    },
+    "articlesPage": {
+      "title": "Articles",
+      "newArticle": "New Article",
+      "noArticles": "No articles yet.",
+      "createFirst": "Create your first article",
+      "table": {
+        "title": "Title",
+        "status": "Status",
+        "visibility": "Visibility",
+        "created": "Created",
+        "actions": "Actions"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "visibility": {
+        "public": "Public",
+        "members": "Members",
+        "hidden": "Hidden"
+      },
+      "actions": {
+        "edit": "Edit",
+        "publish": "Publish",
+        "unpublish": "Unpublish",
+        "delete": "Delete",
+        "deleteConfirm": "Are you sure you want to delete this article?"
+      }
+    },
+    "usersPage": {
+      "title": "Users",
+      "totalUsers": "Total users",
+      "noUsers": "No users yet.",
+      "table": {
+        "email": "Email",
+        "status": "Status",
+        "emailVerified": "Email Verified",
+        "membership": "Membership",
+        "roles": "Roles",
+        "created": "Created",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Active",
+        "disabled": "Disabled"
+      },
+      "email": {
+        "verified": "Verified",
+        "unverified": "Unverified"
+      },
+      "membership": {
+        "active": "Member",
+        "none": "Non-member",
+        "expires": "Expires"
+      },
+      "actions": {
+        "roles": "Roles",
+        "membership": "Membership",
+        "enable": "Enable",
+        "disable": "Disable",
+        "delete": "Delete",
+        "enableConfirm": "Are you sure you want to enable this user?",
+        "disableConfirm": "Are you sure you want to disable this user?",
+        "deleteConfirm": "Are you sure you want to delete this user? This action cannot be undone."
+      },
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page"
+      },
+      "roleModal": {
+        "title": "Manage Roles",
+        "currentRoles": "Current Roles",
+        "noRoles": "No roles assigned",
+        "addRole": "Add Role"
+      },
+      "membershipModal": {
+        "title": "Manage Membership",
+        "expireDate": "Membership Expiration Date",
+        "hint": "Leave empty to remove membership"
+      }
+    }
   },
   "settings": {
     "language": "Language",

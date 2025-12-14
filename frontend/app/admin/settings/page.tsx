@@ -17,6 +17,7 @@ export default function AdminSettingsPage() {
     site_keywords: '',
     home_title: '',
     home_subtitle: '',
+    home_custom_content: '',
     footer_text: '',
     logo_url: '',
   });
@@ -64,7 +65,7 @@ export default function AdminSettingsPage() {
   }
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">{t('admin.settings')}</h1>
 
       {error && (
@@ -75,17 +76,17 @@ export default function AdminSettingsPage() {
 
       {success && (
         <div className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 p-4 rounded-md mb-6">
-          {success}
+          {t('admin.settingsPage.success')}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="border rounded-lg p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Basic Information</h2>
+          <h2 className="text-lg font-semibold">{t('admin.settingsPage.basicInfo')}</h2>
 
           <div className="space-y-2">
             <label htmlFor="site_name" className="text-sm font-medium">
-              Site Name
+              {t('admin.settingsPage.siteName')}
             </label>
             <input
               id="site_name"
@@ -96,13 +97,13 @@ export default function AdminSettingsPage() {
               placeholder="My Blog"
             />
             <p className="text-xs text-muted-foreground">
-              Displayed in the header and browser tab
+              {t('admin.settingsPage.siteNameHint')}
             </p>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="site_description" className="text-sm font-medium">
-              Site Description
+              {t('admin.settingsPage.siteDesc')}
             </label>
             <textarea
               id="site_description"
@@ -113,13 +114,13 @@ export default function AdminSettingsPage() {
               placeholder="A brief description of your blog"
             />
             <p className="text-xs text-muted-foreground">
-              Used for SEO meta description
+              {t('admin.settingsPage.siteDescHint')}
             </p>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="site_keywords" className="text-sm font-medium">
-              Site Keywords
+              {t('admin.settingsPage.siteKeywords')}
             </label>
             <input
               id="site_keywords"
@@ -130,13 +131,13 @@ export default function AdminSettingsPage() {
               placeholder="blog, technology, programming"
             />
             <p className="text-xs text-muted-foreground">
-              Comma-separated keywords for SEO
+              {t('admin.settingsPage.siteKeywordsHint')}
             </p>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="logo_url" className="text-sm font-medium">
-              Logo URL
+              {t('admin.settingsPage.logoUrl')}
             </label>
             <input
               id="logo_url"
@@ -147,17 +148,17 @@ export default function AdminSettingsPage() {
               placeholder="https://example.com/logo.png"
             />
             <p className="text-xs text-muted-foreground">
-              Optional logo image URL
+              {t('admin.settingsPage.logoUrlHint')}
             </p>
           </div>
         </div>
 
         <div className="border rounded-lg p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Homepage</h2>
+          <h2 className="text-lg font-semibold">{t('admin.settingsPage.homepage')}</h2>
 
           <div className="space-y-2">
             <label htmlFor="home_title" className="text-sm font-medium">
-              Homepage Title
+              {t('admin.settingsPage.homeTitle')}
             </label>
             <input
               id="home_title"
@@ -168,13 +169,13 @@ export default function AdminSettingsPage() {
               placeholder="Welcome to My Blog"
             />
             <p className="text-xs text-muted-foreground">
-              Main title displayed on the homepage
+              {t('admin.settingsPage.homeTitleHint')}
             </p>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="home_subtitle" className="text-sm font-medium">
-              Homepage Subtitle
+              {t('admin.settingsPage.homeSubtitle')}
             </label>
             <input
               id="home_subtitle"
@@ -185,17 +186,40 @@ export default function AdminSettingsPage() {
               placeholder="Discover amazing articles and insights"
             />
             <p className="text-xs text-muted-foreground">
-              Subtitle displayed below the main title
+              {t('admin.settingsPage.homeSubtitleHint')}
             </p>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="home_custom_content" className="text-sm font-medium">
+              {t('admin.settingsPage.customContent')}
+            </label>
+            <textarea
+              id="home_custom_content"
+              value={settings.home_custom_content || ''}
+              onChange={(e) => setSettings(prev => ({ ...prev, home_custom_content: e.target.value }))}
+              rows={4}
+              className="w-full px-3 py-2 border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="About this blog..."
+            />
+            <div className="text-xs text-muted-foreground mt-2">
+              {t('admin.settingsPage.customContentHint')}
+              <ul className="list-disc list-inside mt-1 space-y-1 ml-1 text-muted-foreground/80">
+                <li>Use <code className="bg-muted px-1 py-0.5 rounded">**bold**</code> for emphasis.</li>
+                <li>Use <code className="bg-muted px-1 py-0.5 rounded">&lt;mark&gt;highlighted text&lt;/mark&gt;</code> for yellow background.</li>
+                <li>Add images via <code className="bg-muted px-1 py-0.5 rounded">![Alt](url)</code> or <code className="bg-muted px-1 py-0.5 rounded">&lt;img src="..." /&gt;</code>.</li>
+                <li>Links: <code className="bg-muted px-1 py-0.5 rounded">[Title](url)</code>.</li>
+              </ul>
+            </div>
           </div>
         </div>
 
         <div className="border rounded-lg p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Footer</h2>
+          <h2 className="text-lg font-semibold">{t('admin.settingsPage.footer')}</h2>
 
           <div className="space-y-2">
             <label htmlFor="footer_text" className="text-sm font-medium">
-              Footer Text
+              {t('admin.settingsPage.footerText')}
             </label>
             <input
               id="footer_text"
@@ -206,7 +230,7 @@ export default function AdminSettingsPage() {
               placeholder="© 2024 My Blog. All rights reserved."
             />
             <p className="text-xs text-muted-foreground">
-              Copyright or footer text
+              {t('admin.settingsPage.footerTextHint')}
             </p>
           </div>
         </div>
@@ -217,7 +241,7 @@ export default function AdminSettingsPage() {
             disabled={saving}
             className="bg-primary text-primary-foreground px-6 py-2 rounded-md hover:bg-primary/90 disabled:opacity-50"
           >
-            {saving ? 'Saving...' : 'Save Settings'}
+            {saving ? t('admin.settingsPage.saving') : t('admin.settingsPage.saveSettings')}
           </button>
         </div>
       </form>

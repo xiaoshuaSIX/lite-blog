@@ -196,6 +196,16 @@ func (s *ArticleService) GetArticleBySlug(slug string, user *model.User) (*Artic
 		return nil, ErrArticleNotFound
 	}
 
+	// Debug: Log user membership status
+	if user != nil {
+		println("[DEBUG] User:", user.Email, "IsMember:", user.IsMember(), "IsAdmin:", user.IsAdmin(), "Roles count:", len(user.Roles))
+		for _, r := range user.Roles {
+			println("[DEBUG] Role:", r.Code)
+		}
+	} else {
+		println("[DEBUG] User is nil (guest)")
+	}
+
 	// Check if we should show preview
 	isPreview := article.ShouldShowPreview(user)
 	content := article.Content

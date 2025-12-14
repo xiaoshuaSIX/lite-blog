@@ -82,6 +82,7 @@ export interface SiteSettings {
   site_keywords: string;
   home_title: string;
   home_subtitle: string;
+  home_custom_content: string;
   footer_text: string;
   logo_url: string;
 }

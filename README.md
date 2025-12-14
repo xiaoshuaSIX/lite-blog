@@ -210,6 +210,144 @@ npm run build
 npm start
 ```
 
+## Docker Deployment
+
+The project provides a single Docker image that runs both frontend and backend services.
+
+### Build Image
+
+```bash
+docker build -t lite-blog:latest .
+```
+
+### Run Container
+
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -p 8080:8080 \
+  -e ADMIN_EMAIL=admin@example.com \
+  -e ADMIN_PASSWORD=your-secure-password \
+  -e JWT_SECRET=your-jwt-secret-key \
+  -v blog-data:/app/data \
+  --name lite-blog \
+  lite-blog:latest
+```
+
+After starting, access:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8080
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `ADMIN_EMAIL` | Admin email (created on first startup) | - |
+| `ADMIN_PASSWORD` | Admin password (created on first startup) | - |
+| `JWT_SECRET` | JWT secret key (must change in production) | `change-this-in-production` |
+| `DATABASE_PATH` | SQLite database path | `/app/data/blog.db` |
+| `SERVER_PORT` | Backend service port | `8080` |
+| `SERVER_MODE` | Run mode (debug/release) | `release` |
+| `CORS_ORIGINS` | Allowed CORS origins (comma-separated) | `http://localhost:3000` |
+
+### Using docker-compose (Recommended)
+
+This is the simplest deployment method, suitable for production environments.
+
+**Step 1: Create environment configuration file**
+
+```bash
+cp .env.example .env
+```
+
+**Step 2: Edit `.env` file**
+
+```bash
+# .env file example
+
+# Required: JWT secret key (for user authentication, use a random string)
+JWT_SECRET=your-super-secret-jwt-key-change-this
+
+# Optional: Admin account (created automatically on first startup)
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your-secure-admin-password
+
+# Optional: CORS configuration (if frontend is deployed on another domain)
+CORS_ORIGINS=http://localhost:3000
+
+# Optional: Server configuration
+SERVER_MODE=release
+```
+
+**Step 3: Start services**
+
+```bash
+# Build and start (first run)
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Restart services
+docker-compose restart
+```
+
+**Step 4: Access services**
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8080
+- Login with the admin account configured in `.env`
+
+**Common Commands**
+
+```bash
+# Check running status
+docker-compose ps
+
+# View real-time logs
+docker-compose logs -f
+
+# Enter container for debugging
+docker exec -it lite-blog sh
+
+# Backup database
+docker cp lite-blog:/app/data/blog.db ./backup-$(date +%Y%m%d).db
+
+# Full rebuild (clear cache)
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+### Push to Docker Hub
+
+```bash
+# Login
+docker login
+
+# Tag image
+docker tag lite-blog:latest your-username/lite-blog:latest
+
+# Push
+docker push your-username/lite-blog:latest
+```
+
+### Pull and Run from Docker Hub
+
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -p 8080:8080 \
+  -e ADMIN_EMAIL=admin@example.com \
+  -e ADMIN_PASSWORD=your-secure-password \
+  -e JWT_SECRET=your-jwt-secret-key \
+  -v blog-data:/app/data \
+  your-username/lite-blog:latest
+```
+
 ## License
 
 MIT License

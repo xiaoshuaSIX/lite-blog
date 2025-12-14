@@ -116,6 +116,53 @@ class AdminApiClient {
       body: JSON.stringify(data),
     });
   }
+
+  // User management
+  async getUsers(page: number = 1, pageSize: number = 10): Promise<UserListResponse> {
+    return this.request(`/api/admin/users?page=${page}&page_size=${pageSize}`);
+  }
+
+  async getUser(id: number): Promise<UserDetail> {
+    return this.request(`/api/admin/users/${id}`);
+  }
+
+  async updateUserStatus(id: number, status: number): Promise<{ message: string }> {
+    return this.request(`/api/admin/users/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async updateUserMembership(id: number, expireAt: string | null): Promise<{ message: string }> {
+    return this.request(`/api/admin/users/${id}/membership`, {
+      method: 'PUT',
+      body: JSON.stringify({ expire_at: expireAt }),
+    });
+  }
+
+  async assignRole(userId: number, roleCode: string): Promise<{ message: string }> {
+    return this.request(`/api/admin/users/${userId}/roles`, {
+      method: 'POST',
+      body: JSON.stringify({ role_code: roleCode }),
+    });
+  }
+
+  async removeRole(userId: number, roleCode: string): Promise<{ message: string }> {
+    return this.request(`/api/admin/users/${userId}/roles`, {
+      method: 'DELETE',
+      body: JSON.stringify({ role_code: roleCode }),
+    });
+  }
+
+  async deleteUser(id: number): Promise<{ message: string }> {
+    return this.request(`/api/admin/users/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getRoles(): Promise<RolesResponse> {
+    return this.request('/api/admin/roles');
+  }
 }
 
 export interface SiteSettings {
@@ -124,8 +171,51 @@ export interface SiteSettings {
   site_keywords: string;
   home_title: string;
   home_subtitle: string;
+  home_custom_content: string;
   footer_text: string;
   logo_url: string;
+}
+
+// User management types
+export interface UserListItem {
+  id: number;
+  email: string;
+  email_verified: boolean;
+  status: number;
+  is_member: boolean;
+  member_expire_at?: string;
+  roles: string[];
+  created_at: string;
+}
+
+export interface UserDetail {
+  id: number;
+  email: string;
+  email_verified: boolean;
+  status: number;
+  is_member: boolean;
+  member_expire_at?: string;
+  roles: RoleInfo[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RoleInfo {
+  id: number;
+  code: string;
+  name: string;
+}
+
+export interface UserListResponse {
+  users: UserListItem[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
+export interface RolesResponse {
+  roles: RoleInfo[];
 }
 
 export const adminApi = new AdminApiClient();

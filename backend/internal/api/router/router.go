@@ -33,6 +33,7 @@ func Setup(cfg *config.Config, db *gorm.DB) *gin.Engine {
 	articleService := service.NewArticleService(articleRepo)
 	commentService := service.NewCommentService(commentRepo, articleRepo)
 	settingService := service.NewSettingService(settingRepo)
+	userService := service.NewUserService(userRepo, roleRepo)
 
 	// Initialize handlers
 	authHandler := handler.NewAuthHandler(authService, cfg)
@@ -41,6 +42,7 @@ func Setup(cfg *config.Config, db *gorm.DB) *gin.Engine {
 	settingHandler := handler.NewSettingHandler(settingService)
 	adminArticleHandler := handler.NewAdminArticleHandler(articleService)
 	adminCommentHandler := handler.NewAdminCommentHandler(commentService)
+	adminUserHandler := handler.NewAdminUserHandler(userService)
 
 	// Create auth middleware
 	authMiddleware := middleware.AuthMiddleware(cfg.JWT.Secret, userRepo)
@@ -105,6 +107,16 @@ func Setup(cfg *config.Config, db *gorm.DB) *gin.Engine {
 			// Site settings management
 			admin.GET("/settings", settingHandler.GetSiteSettings)
 			admin.PUT("/settings", settingHandler.UpdateSiteSettings)
+
+			// User management
+			admin.GET("/users", adminUserHandler.List)
+			admin.GET("/users/:id", adminUserHandler.GetByID)
+			admin.PUT("/users/:id/status", adminUserHandler.UpdateStatus)
+			admin.PUT("/users/:id/membership", adminUserHandler.UpdateMembership)
+			admin.POST("/users/:id/roles", adminUserHandler.AssignRole)
+			admin.DELETE("/users/:id/roles", adminUserHandler.RemoveRole)
+			admin.DELETE("/users/:id", adminUserHandler.Delete)
+			admin.GET("/roles", adminUserHandler.GetRoles)
 		}
 	}
 

@@ -1,15 +1,42 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Header } from '@/components/layout/header';
-import { api } from '@/lib/api';
+import type { Article } from '@/lib/api';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-async function getArticle(slug: string) {
+async function getArticle(slug: string): Promise<Article | null> {
   try {
-    return await api.getArticleBySlug(slug);
+    // Get cookies from the request to forward to backend
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token');
+
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    // Forward the auth cookie if present
+    if (token) {
+      headers['Cookie'] = `token=${token.value}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/articles/${slug}`, {
+      headers,
+      cache: 'no-store', // Don't cache authenticated requests
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return response.json();
   } catch {
     return null;
   }
@@ -62,9 +89,9 @@ export default async function ArticlePage({ params }: PageProps) {
           {/* Article Content */}
           <div className="relative">
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              {article.content.split('\n').map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {article.content}
+              </ReactMarkdown>
             </div>
 
             {/* Paywall Overlay */}

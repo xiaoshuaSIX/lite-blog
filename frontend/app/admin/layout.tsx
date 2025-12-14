@@ -5,22 +5,45 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api, User } from '@/lib/api';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
-const navItems = [
-  { href: '/admin', label: 'Dashboard' },
-  { href: '/admin/articles', label: 'Articles' },
-  { href: '/admin/users', label: 'Users' },
-  { href: '/admin/settings', label: 'Settings' },
-];
+import { useLanguage } from '@/providers/language-provider';
+
+
 
 export default function AdminLayout({
+
   children,
+
 }: {
+
   children: React.ReactNode;
+
 }) {
+
   const router = useRouter();
+
+  const { t } = useLanguage();
+
   const [user, setUser] = useState<User | null>(null);
+
   const [loading, setLoading] = useState(true);
+
+
+
+  const navItems = [
+
+    { href: '/admin', label: t('admin.dashboard') },
+
+    { href: '/admin/articles', label: t('admin.articles') },
+
+    { href: '/admin/users', label: t('admin.users') },
+
+    { href: '/admin/settings', label: t('admin.settings') },
+
+  ];
+
+
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -53,20 +76,21 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-muted/30 text-foreground flex flex-col">
       {/* Admin Header */}
-      <header className="border-b bg-card">
-        <div className="flex h-16 items-center justify-between px-6">
-          <div className="flex items-center gap-6">
-            <Link href="/admin" className="text-xl font-bold">
-              Admin Panel
+      <header className="sticky top-0 z-40 border-b border-border/40 bg-background/80 backdrop-blur-md">
+        <div className="container max-w-7xl mx-auto flex h-16 items-center justify-between px-6">
+          <div className="flex items-center gap-8">
+            <Link href="/admin" className="flex items-center gap-2 font-bold text-xl tracking-tight">
+              <span className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary">⚡️</span>
+              Admin
             </Link>
-            <nav className="hidden md:flex items-center gap-4">
+            <nav className="hidden md:flex items-center gap-1">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="px-4 py-2 text-sm font-medium rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
                 >
                   {item.label}
                 </Link>
@@ -74,14 +98,16 @@ export default function AdminLayout({
             </nav>
           </div>
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <ThemeToggle />
+            <div className="h-6 w-px bg-border/50" />
             <Link
               href="/"
-              className="text-sm text-muted-foreground hover:text-foreground"
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
-              View Site
+              {t('admin.viewLiveSite')}
             </Link>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-xs px-2 py-1 rounded bg-muted text-muted-foreground hidden sm:inline-block">
               {user.email}
             </span>
           </div>
@@ -89,7 +115,7 @@ export default function AdminLayout({
       </header>
 
       {/* Main Content */}
-      <main className="p-6">
+      <main className="flex-1 container max-w-7xl mx-auto p-6 md:p-8">
         {children}
       </main>
     </div>

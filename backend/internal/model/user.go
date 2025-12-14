@@ -30,11 +30,17 @@ const (
 )
 
 // IsMember checks if the user has an active membership
+// A user is considered a member if they have the member role OR have an active membership expiration date
 func (u *User) IsMember() bool {
-	if u.MemberExpireAt == nil {
-		return false
+	// Check if user has the member role
+	if u.HasRole(RoleCodeMember) {
+		return true
 	}
-	return time.Now().Before(*u.MemberExpireAt)
+	// Check if user has an active membership based on expiration date
+	if u.MemberExpireAt != nil && time.Now().Before(*u.MemberExpireAt) {
+		return true
+	}
+	return false
 }
 
 // IsAdmin checks if the user has admin role

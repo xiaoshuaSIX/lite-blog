@@ -36,6 +36,8 @@ func (s *SettingService) GetSiteSettings() (*model.SiteSettings, error) {
 			siteSettings.HomeTitle = setting.Value
 		case "home_subtitle":
 			siteSettings.HomeSubtitle = setting.Value
+		case "home_custom_content":
+			siteSettings.HomeCustomContent = setting.Value
 		case "footer_text":
 			siteSettings.FooterText = setting.Value
 		case "logo_url":
@@ -49,13 +51,14 @@ func (s *SettingService) GetSiteSettings() (*model.SiteSettings, error) {
 // UpdateSiteSettings updates site settings
 func (s *SettingService) UpdateSiteSettings(settings *model.SiteSettings) error {
 	updates := map[string]string{
-		"site_name":        settings.SiteName,
-		"site_description": settings.SiteDescription,
-		"site_keywords":    settings.SiteKeywords,
-		"home_title":       settings.HomeTitle,
-		"home_subtitle":    settings.HomeSubtitle,
-		"footer_text":      settings.FooterText,
-		"logo_url":         settings.LogoURL,
+		"site_name":           settings.SiteName,
+		"site_description":    settings.SiteDescription,
+		"site_keywords":       settings.SiteKeywords,
+		"home_title":          settings.HomeTitle,
+		"home_subtitle":       settings.HomeSubtitle,
+		"home_custom_content": settings.HomeCustomContent,
+		"footer_text":         settings.FooterText,
+		"logo_url":            settings.LogoURL,
 	}
 
 	return s.settingRepo.UpdateMultiple(updates)
