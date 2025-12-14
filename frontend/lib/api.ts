@@ -1,4 +1,17 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+// Use public API URL in the browser; on the server fall back to an internal URL so SSR calls hit the Go API
+// instead of the Next.js server itself (which would 404 for /api/*).
+const resolveBaseUrl = () => {
+  const publicUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (publicUrl) return publicUrl;
+
+  if (typeof window === 'undefined') {
+    return process.env.API_INTERNAL_URL || 'http://localhost:8080';
+  }
+
+  return '';
+};
+
+export const API_BASE_URL = resolveBaseUrl();
 
 export interface User {
   id: number;

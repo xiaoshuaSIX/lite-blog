@@ -1,13 +1,25 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { ThemeToggle } from '@/components/theme/theme-toggle';
-import { LanguageSwitcher } from '@/components/language-switcher';
-import { useLanguage } from '@/providers/language-provider';
-import { useSiteSettings } from '@/providers/settings-provider';
-import { api, User } from '@/lib/api';
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { useLanguage } from "@/providers/language-provider";
+import { useSiteSettings } from "@/providers/settings-provider";
+import { api, User } from "@/lib/api";
+
+// Hydration-safe: render language switcher only on client to avoid Radix ID mismatches between server/client.
+const LanguageSwitcher = dynamic(
+  () =>
+    import("@/components/language-switcher").then(
+      (mod) => mod.LanguageSwitcher
+    ),
+  {
+    ssr: false,
+    loading: () => <div className="size-9 rounded-md bg-muted/60" />,
+  }
+);
 
 export function Header() {
   const router = useRouter();

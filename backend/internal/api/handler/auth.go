@@ -241,7 +241,7 @@ func (h *AuthHandler) ResendVerification(c *gin.Context) {
 // setTokenCookie sets the JWT token in an HttpOnly cookie
 func (h *AuthHandler) setTokenCookie(c *gin.Context, token string) {
 	maxAge := h.cfg.JWT.ExpireHours * 3600 // Convert hours to seconds
-	secure := h.cfg.Server.Mode == "release"
+	secure := isSecureRequest(c)
 
 	c.SetCookie(
 		middleware.CookieNameToken, // name
@@ -256,13 +256,33 @@ func (h *AuthHandler) setTokenCookie(c *gin.Context, token string) {
 
 // clearTokenCookie clears the JWT token cookie
 func (h *AuthHandler) clearTokenCookie(c *gin.Context) {
+	secure := isSecureRequest(c)
+
 	c.SetCookie(
 		middleware.CookieNameToken,
 		"",
-		-1,   // negative max age deletes the cookie
+		-1, // negative max age deletes the cookie
 		"/",
 		"",
-		false,
+		secure,
 		true,
 	)
+}
+
+// isSecureRequest determines whether the current request is over HTTPS, including common proxy headers.
+func isSecureRequest(c *gin.Context) bool {
+	if c.Request.TLS != nil {
+		return true
+	}
+
+	proto := c.Request.Header.Get("X-Forwarded-Proto")
+	if strings.EqualFold(proto, "https") {
+		return true
+	}
+
+	if strings.EqualFold(c.Request.Header.Get("X-Forwarded-Ssl"), "on") {
+		return true
+	}
+
+	return false
 }
