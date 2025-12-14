@@ -1,0 +1,99 @@
+'use client';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { useLanguage } from '@/providers/language-provider';
+import { useSiteSettings } from '@/providers/settings-provider';
+import { api, User } from '@/lib/api';
+
+export function Header() {
+  const router = useRouter();
+  const { t } = useLanguage();
+  const { settings } = useSiteSettings();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const userData = await api.getMe();
+        setUser(userData);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await api.logout();
+      setUser(null);
+      router.refresh();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  return (
+    <header className="border-b">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <Link href="/" className="text-xl font-bold hover:text-primary">
+          {settings?.site_name || 'Lite Blog'}
+        </Link>
+        <div className="flex items-center gap-4">
+          <LanguageSwitcher />
+          <ThemeToggle />
+          {loading ? (
+            <div className="w-20 h-8 bg-muted animate-pulse rounded" />
+          ) : user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground">
+                {user.email}
+                {user.is_member && (
+                  <span className="ml-2 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">
+                    Member
+                  </span>
+                )}
+              </span>
+              {user.roles?.includes('admin') && (
+                <Link
+                  href="/admin"
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                >
+                  {t('nav.admin')}
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                {t('nav.logout')}
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link
+                href="/login"
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                {t('nav.login')}
+              </Link>
+              <Link
+                href="/register"
+                className="text-sm bg-primary text-primary-foreground px-3 py-1.5 rounded-md hover:bg-primary/90"
+              >
+                {t('nav.register')}
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}

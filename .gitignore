@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# Environment files
+.env
+backend/.env
+frontend/.env.local
+
+# SQLite database
+backend/blog.db
+
+# Backend build artifacts
+backend/bin/
+backend/*.log
+backend/configs/config.yaml
+
+# Frontend build artifacts
+frontend/.next/
+frontend/node_modules/
+frontend/out/

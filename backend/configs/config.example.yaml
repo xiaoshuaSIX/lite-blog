@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  mode: debug # debug, release, test
+
+database:
+  path: ./blog.db
+
+jwt:
+  secret: your-secret-key-change-in-production
+  expire_hours: 24
+
+cors:
+  allowed_origins:
+    - http://localhost:3000
+  allowed_methods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+    - OPTIONS
+  allowed_headers:
+    - Content-Type
+    - Authorization
+    - Cookie
+  allow_credentials: true
+
+email:
+  provider: ses # ses or smtp
+  from: noreply@yourdomain.com
+  aws:
+    region: us-east-1
+    # AWS credentials should be set via environment variables:
+    # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY

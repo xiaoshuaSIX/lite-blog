@@ -1,0 +1,82 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "back": "Back",
+    "search": "Search",
+    "noData": "No data"
+  },
+  "nav": {
+    "home": "Home",
+    "articles": "Articles",
+    "about": "About",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "admin": "Admin",
+    "profile": "Profile"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "loginTitle": "Login",
+    "registerTitle": "Register",
+    "loginSuccess": "Login successful",
+    "logoutSuccess": "Logged out",
+    "registerSuccess": "Registration successful",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "invalidEmail": "Invalid email format",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "passwordMismatch": "Passwords do not match"
+  },
+  "article": {
+    "title": "Title",
+    "content": "Content",
+    "author": "Author",
+    "publishedAt": "Published at",
+    "readMore": "Read more",
+    "comments": "Comments",
+    "noComments": "No comments yet",
+    "writeComment": "Write a comment...",
+    "submitComment": "Submit Comment",
+    "loginToComment": "Login to comment",
+    "memberOnly": "Members only",
+    "upgradeToRead": "Upgrade to member to read full article"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "articles": "Articles",
+    "users": "Users",
+    "comments": "Comments",
+    "settings": "Settings",
+    "newArticle": "New Article",
+    "editArticle": "Edit Article",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "draft": "Draft",
+    "published": "Published"
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System"
+  },
+  "footer": {
+    "copyright": "All rights reserved",
+    "poweredBy": "Powered by"
+  }
+}

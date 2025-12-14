@@ -1,0 +1,82 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "出错了",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "submit": "提交",
+    "confirm": "确认",
+    "back": "返回",
+    "search": "搜索",
+    "noData": "暂无数据"
+  },
+  "nav": {
+    "home": "首页",
+    "articles": "文章",
+    "about": "关于",
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出登录",
+    "admin": "管理后台",
+    "profile": "个人中心"
+  },
+  "auth": {
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "loginTitle": "登录",
+    "registerTitle": "注册",
+    "loginSuccess": "登录成功",
+    "logoutSuccess": "已退出登录",
+    "registerSuccess": "注册成功",
+    "forgotPassword": "忘记密码？",
+    "noAccount": "没有账号？",
+    "hasAccount": "已有账号？",
+    "emailRequired": "请输入邮箱",
+    "passwordRequired": "请输入密码",
+    "invalidEmail": "邮箱格式不正确",
+    "passwordTooShort": "密码至少6位",
+    "passwordMismatch": "两次密码不一致"
+  },
+  "article": {
+    "title": "标题",
+    "content": "内容",
+    "author": "作者",
+    "publishedAt": "发布时间",
+    "readMore": "阅读更多",
+    "comments": "评论",
+    "noComments": "暂无评论",
+    "writeComment": "写评论...",
+    "submitComment": "发表评论",
+    "loginToComment": "登录后发表评论",
+    "memberOnly": "会员专享内容",
+    "upgradeToRead": "升级为会员阅读全文"
+  },
+  "admin": {
+    "dashboard": "仪表盘",
+    "articles": "文章管理",
+    "users": "用户管理",
+    "comments": "评论管理",
+    "settings": "设置",
+    "newArticle": "新建文章",
+    "editArticle": "编辑文章",
+    "publish": "发布",
+    "unpublish": "取消发布",
+    "draft": "草稿",
+    "published": "已发布"
+  },
+  "settings": {
+    "language": "语言",
+    "theme": "主题",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "themeSystem": "跟随系统"
+  },
+  "footer": {
+    "copyright": "版权所有",
+    "poweredBy": "技术支持"
+  }
+}
