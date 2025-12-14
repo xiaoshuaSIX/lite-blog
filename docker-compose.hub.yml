@@ -1,16 +1,12 @@
 version: '3.8'
 
-# 使用 Docker Hub 镜像的 docker-compose 配置
-# 适用于生产环境部署，无需本地构建
+# 单容器部署：Go + Next 一起运行，Go 反代未命中路由到内部 Next
 
 services:
   lite-blog:
     image: xiaoshuai66/lite-blog:latest
     container_name: lite-blog
     restart: unless-stopped
-    ports:
-      - "3000:3000"   # Frontend
-      - "8080:8080"   # Backend API
     environment:
       # Required: Change these in production
       - JWT_SECRET=${JWT_SECRET:-change-this-in-production}
@@ -23,9 +19,12 @@ services:
       - SERVER_PORT=${SERVER_PORT:-8080}
       - SERVER_MODE=${SERVER_MODE:-release}
       - DATABASE_PATH=${DATABASE_PATH:-/app/data/blog.db}
-      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
+      - CORS_ORIGINS=${CORS_ORIGINS:-https://your-domain.com}
+      - FRONTEND_PROXY=${FRONTEND_PROXY:-http://localhost:3000}
     volumes:
       - blog-data:/app/data
+    ports:
+      - "8080:8080"
 
 volumes:
   blog-data:

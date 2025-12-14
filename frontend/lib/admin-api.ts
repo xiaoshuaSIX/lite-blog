@@ -1,6 +1,5 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-
 import type { Article, ArticleListItem, ApiError } from './api';
+import { API_BASE_URL } from './api';
 
 export interface CreateArticleRequest {
   title: string;

@@ -19,8 +19,9 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Port int    `mapstructure:"port"`
-	Mode string `mapstructure:"mode"`
+	Port          int    `mapstructure:"port"`
+	Mode          string `mapstructure:"mode"`
+	FrontendProxy string `mapstructure:"frontend_proxy"`
 }
 
 type DatabaseConfig struct {
@@ -98,6 +99,10 @@ func Load() *Config {
 
 	if mode := os.Getenv("SERVER_MODE"); mode != "" {
 		config.Server.Mode = mode
+	}
+
+	if frontend := os.Getenv("FRONTEND_PROXY"); frontend != "" {
+		config.Server.FrontendProxy = frontend
 	}
 
 	if origins := os.Getenv("CORS_ORIGINS"); origins != "" {

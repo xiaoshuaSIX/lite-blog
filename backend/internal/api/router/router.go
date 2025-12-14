@@ -1,6 +1,9 @@
 package router
 
 import (
+	"log"
+	"net/http/httputil"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lite-blog/backend/internal/api/handler"
 	"github.com/lite-blog/backend/internal/api/middleware"
@@ -15,6 +18,15 @@ func Setup(cfg *config.Config, db *gorm.DB) *gin.Engine {
 	gin.SetMode(cfg.Server.Mode)
 
 	r := gin.Default()
+
+	var frontendProxy *httputil.ReverseProxy
+	if cfg.Server.FrontendProxy != "" {
+		proxy, err := newFrontendProxy(cfg.Server.FrontendProxy)
+		if err != nil {
+			log.Fatalf("failed to init frontend proxy: %v", err)
+		}
+		frontendProxy = proxy
+	}
 
 	// Apply global middleware
 	r.Use(middleware.CORS(&cfg.CORS))
@@ -118,6 +130,32 @@ func Setup(cfg *config.Config, db *gorm.DB) *gin.Engine {
 			admin.DELETE("/users/:id", adminUserHandler.Delete)
 			admin.GET("/roles", adminUserHandler.GetRoles)
 		}
+	}
+
+	// All unmatched routes proxy to Next.js server (SSR / assets).
+	if frontendProxy != nil {
+		r.NoRoute(func(c *gin.Context) {
+			if host := c.Request.Host; host != "" {
+				c.Request.Header.Set("X-Forwarded-Host", host)
+			}
+
+			if proto := c.Request.Header.Get("X-Forwarded-Proto"); proto == "" {
+				if c.Request.TLS != nil {
+					c.Request.Header.Set("X-Forwarded-Proto", "https")
+				} else {
+					c.Request.Header.Set("X-Forwarded-Proto", "http")
+				}
+			}
+
+			if clientIP := c.ClientIP(); clientIP != "" {
+				if existing := c.Request.Header.Get("X-Forwarded-For"); existing != "" {
+					clientIP = existing + ", " + clientIP
+				}
+				c.Request.Header.Set("X-Forwarded-For", clientIP)
+			}
+
+			frontendProxy.ServeHTTP(c.Writer, c.Request)
+		})
 	}
 
 	return r

@@ -5,11 +5,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-} # 留空则前端使用相对路径 /api
     container_name: lite-blog
     restart: unless-stopped
     ports:
-      - "3000:3000"   # Frontend
-      - "8080:8080"   # Backend API
+      - "80:8080"   # 统一入口：Go 提供 API，未命中路由反代 Next
     environment:
       # Required: Change these in production
       - JWT_SECRET=${JWT_SECRET:-change-this-in-production}
@@ -23,6 +24,7 @@ services:
       - SERVER_MODE=${SERVER_MODE:-release}
       - DATABASE_PATH=${DATABASE_PATH:-/app/data/blog.db}
       - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
+      - FRONTEND_PROXY=${FRONTEND_PROXY:-http://localhost:3000}
     volumes:
       - blog-data:/app/data
 

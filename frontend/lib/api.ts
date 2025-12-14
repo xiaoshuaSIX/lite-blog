@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 
 export interface User {
   id: number;
@@ -98,7 +98,9 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
+    // Use relative path by default; allow absolute override via env/constructor.
+    const base = this.baseUrl ? this.baseUrl.replace(/\/$/, '') : '';
+    const url = `${base}${endpoint}`;
 
     const config: RequestInit = {
       ...options,

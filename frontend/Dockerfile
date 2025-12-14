@@ -12,8 +12,8 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build arguments for environment variables
-ARG NEXT_PUBLIC_API_URL=http://localhost:8080
+# Build argument for environment variables (optional; default to empty for relative /api)
+ARG NEXT_PUBLIC_API_URL
 
 # Set environment variable for build
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
