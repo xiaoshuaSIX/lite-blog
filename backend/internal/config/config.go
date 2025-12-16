@@ -43,6 +43,7 @@ type CORSConfig struct {
 type EmailConfig struct {
 	Provider string         `mapstructure:"provider"`
 	From     string         `mapstructure:"from"`
+	SiteURL  string         `mapstructure:"site_url"`
 	AWS      AWSEmailConfig `mapstructure:"aws"`
 }
 

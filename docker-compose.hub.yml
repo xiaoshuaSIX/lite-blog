@@ -11,6 +11,11 @@ services:
       # Required: Change these in production
       - JWT_SECRET=${JWT_SECRET:-change-this-in-production}
 
+      # Required: AWS SES for email verification
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+
       # Optional: Admin user (created on first startup)
       - ADMIN_EMAIL=${ADMIN_EMAIL:-}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}

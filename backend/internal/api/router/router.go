@@ -40,11 +40,11 @@ func Setup(cfg *config.Config, db *gorm.DB) *gin.Engine {
 	settingRepo := repository.NewSettingRepository(db)
 
 	// Initialize services
-	emailService := service.NewEmailService(&cfg.Email, "http://localhost:3000")
+	settingService := service.NewSettingService(settingRepo)
+	emailService := service.NewEmailService(&cfg.Email, settingService)
 	authService := service.NewAuthService(userRepo, roleRepo, emailService, cfg)
 	articleService := service.NewArticleService(articleRepo)
 	commentService := service.NewCommentService(commentRepo, articleRepo)
-	settingService := service.NewSettingService(settingRepo)
 	userService := service.NewUserService(userRepo, roleRepo)
 
 	// Initialize handlers

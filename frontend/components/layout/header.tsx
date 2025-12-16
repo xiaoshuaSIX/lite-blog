@@ -65,14 +65,17 @@ export function Header() {
             <div className="w-20 h-8 bg-muted animate-pulse rounded" />
           ) : user ? (
             <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
+              <Link
+                href="/profile"
+                className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
+              >
                 {user.email}
                 {user.is_member && (
-                  <span className="ml-2 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">
+                  <span className="ml-1 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">
                     Member
                   </span>
                 )}
-              </span>
+              </Link>
               {user.roles?.includes('admin') && (
                 <Link
                   href="/admin"

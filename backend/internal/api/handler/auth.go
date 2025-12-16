@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lite-blog/backend/internal/api/middleware"
 	"github.com/lite-blog/backend/internal/config"
+	"github.com/lite-blog/backend/internal/model"
 	"github.com/lite-blog/backend/internal/service"
 )
 
@@ -41,11 +42,30 @@ type VerifyEmailRequest struct {
 
 // UserResponse represents the user response
 type UserResponse struct {
-	ID            uint     `json:"id"`
-	Email         string   `json:"email"`
-	EmailVerified bool     `json:"email_verified"`
-	IsMember      bool     `json:"is_member"`
-	Roles         []string `json:"roles"`
+	ID             uint    `json:"id"`
+	Email          string  `json:"email"`
+	EmailVerified  bool    `json:"email_verified"`
+	IsMember       bool    `json:"is_member"`
+	MemberExpireAt *string `json:"member_expire_at,omitempty"`
+	Roles          []string `json:"roles"`
+	CreatedAt      string  `json:"created_at"`
+}
+
+// buildUserResponse creates a UserResponse from a User model
+func buildUserResponse(user *model.User) UserResponse {
+	resp := UserResponse{
+		ID:            user.ID,
+		Email:         user.Email,
+		EmailVerified: user.EmailVerified,
+		IsMember:      user.IsMember(),
+		Roles:         user.GetRoleCodes(),
+		CreatedAt:     user.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+	}
+	if user.MemberExpireAt != nil {
+		expireStr := user.MemberExpireAt.Format("2006-01-02T15:04:05Z07:00")
+		resp.MemberExpireAt = &expireStr
+	}
+	return resp
 }
 
 // Register handles user registration
@@ -81,13 +101,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Registration successful. Please check your email to verify your account.",
-		"user": UserResponse{
-			ID:            user.ID,
-			Email:         user.Email,
-			EmailVerified: user.EmailVerified,
-			IsMember:      user.IsMember(),
-			Roles:         user.GetRoleCodes(),
-		},
+		"user":    buildUserResponse(user),
 	})
 }
 
@@ -132,13 +146,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login successful",
-		"user": UserResponse{
-			ID:            user.ID,
-			Email:         user.Email,
-			EmailVerified: user.EmailVerified,
-			IsMember:      user.IsMember(),
-			Roles:         user.GetRoleCodes(),
-		},
+		"user":    buildUserResponse(user),
 	})
 }
 
@@ -163,13 +171,7 @@ func (h *AuthHandler) Me(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, UserResponse{
-		ID:            user.ID,
-		Email:         user.Email,
-		EmailVerified: user.EmailVerified,
-		IsMember:      user.IsMember(),
-		Roles:         user.GetRoleCodes(),
-	})
+	c.JSON(http.StatusOK, buildUserResponse(user))
 }
 
 // VerifyEmail handles email verification

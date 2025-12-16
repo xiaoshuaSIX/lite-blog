@@ -24,6 +24,9 @@ docker run -d --name lite-blog \
   -p 80:8080 \
   -v blog-data:/app/data \
   -e JWT_SECRET=please-change-me \
+  -e AWS_ACCESS_KEY_ID=your_access_key \
+  -e AWS_SECRET_ACCESS_KEY=your_secret_key \
+  -e AWS_REGION=us-east-1 \
   -e CORS_ORIGINS=https://your-domain.com \
   -e FRONTEND_PROXY=http://localhost:3000 \
   -e ADMIN_EMAIL=admin@your-domain.com \   # optional
@@ -46,6 +49,9 @@ services:
       - "80:8080"
     environment:
       JWT_SECRET: please-change-me
+      AWS_ACCESS_KEY_ID: your_access_key
+      AWS_SECRET_ACCESS_KEY: your_secret_key
+      AWS_REGION: us-east-1
       CORS_ORIGINS: https://your-domain.com
       FRONTEND_PROXY: http://localhost:3000
       SERVER_PORT: 8080

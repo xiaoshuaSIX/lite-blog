@@ -18,6 +18,8 @@ type SiteSettings struct {
 	SiteName          string `json:"site_name"`
 	SiteDescription   string `json:"site_description"`
 	SiteKeywords      string `json:"site_keywords"`
+	SiteURL           string `json:"site_url"`
+	EmailFrom         string `json:"email_from"`
 	HomeTitle         string `json:"home_title"`
 	HomeSubtitle      string `json:"home_subtitle"`
 	HomeCustomContent string `json:"home_custom_content"`
@@ -31,6 +33,8 @@ func DefaultSiteSettings() *SiteSettings {
 		SiteName:          "Lite Blog",
 		SiteDescription:   "A role-based blog system",
 		SiteKeywords:      "blog, articles, technology",
+		SiteURL:           "http://localhost:8080",
+		EmailFrom:         "",
 		HomeTitle:         "Welcome to Lite Blog",
 		HomeSubtitle:      "Discover amazing articles and insights",
 		HomeCustomContent: "About this blog: This is a customizable area where you can introduce yourself or your website.",

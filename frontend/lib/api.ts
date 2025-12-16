@@ -18,7 +18,9 @@ export interface User {
   email: string;
   email_verified: boolean;
   is_member: boolean;
+  member_expire_at?: string;
   roles: string[];
+  created_at: string;
 }
 
 export interface AuthResponse {
@@ -93,6 +95,8 @@ export interface SiteSettings {
   site_name: string;
   site_description: string;
   site_keywords: string;
+  site_url: string;
+  email_from: string;
   home_title: string;
   home_subtitle: string;
   home_custom_content: string;

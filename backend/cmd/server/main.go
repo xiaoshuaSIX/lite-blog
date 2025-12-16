@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/joho/godotenv"
 	"github.com/lite-blog/backend/internal/api/router"
 	"github.com/lite-blog/backend/internal/config"
 	"github.com/lite-blog/backend/internal/model"
@@ -13,6 +14,11 @@ import (
 )
 
 func main() {
+	// Load .env file (optional, won't error if not exists)
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using environment variables")
+	}
+
 	// Load config
 	cfg := config.Load()
 

@@ -32,6 +32,10 @@ func (s *SettingService) GetSiteSettings() (*model.SiteSettings, error) {
 			siteSettings.SiteDescription = setting.Value
 		case "site_keywords":
 			siteSettings.SiteKeywords = setting.Value
+		case "site_url":
+			siteSettings.SiteURL = setting.Value
+		case "email_from":
+			siteSettings.EmailFrom = setting.Value
 		case "home_title":
 			siteSettings.HomeTitle = setting.Value
 		case "home_subtitle":
@@ -54,6 +58,8 @@ func (s *SettingService) UpdateSiteSettings(settings *model.SiteSettings) error 
 		"site_name":           settings.SiteName,
 		"site_description":    settings.SiteDescription,
 		"site_keywords":       settings.SiteKeywords,
+		"site_url":            settings.SiteURL,
+		"email_from":          settings.EmailFrom,
 		"home_title":          settings.HomeTitle,
 		"home_subtitle":       settings.HomeSubtitle,
 		"home_custom_content": settings.HomeCustomContent,
@@ -62,4 +68,31 @@ func (s *SettingService) UpdateSiteSettings(settings *model.SiteSettings) error 
 	}
 
 	return s.settingRepo.UpdateMultiple(updates)
+}
+
+// GetSiteName returns the site name for use in emails etc.
+func (s *SettingService) GetSiteName() string {
+	settings, err := s.GetSiteSettings()
+	if err != nil || settings.SiteName == "" {
+		return "Lite Blog"
+	}
+	return settings.SiteName
+}
+
+// GetSiteURL returns the site URL for use in emails etc.
+func (s *SettingService) GetSiteURL() string {
+	settings, err := s.GetSiteSettings()
+	if err != nil || settings.SiteURL == "" {
+		return "http://localhost:8080"
+	}
+	return settings.SiteURL
+}
+
+// GetEmailFrom returns the email from address for sending emails
+func (s *SettingService) GetEmailFrom() string {
+	settings, err := s.GetSiteSettings()
+	if err != nil || settings.EmailFrom == "" {
+		return ""
+	}
+	return settings.EmailFrom
 }

@@ -15,6 +15,8 @@ export default function AdminSettingsPage() {
     site_name: '',
     site_description: '',
     site_keywords: '',
+    site_url: '',
+    email_from: '',
     home_title: '',
     home_subtitle: '',
     home_custom_content: '',
@@ -26,7 +28,19 @@ export default function AdminSettingsPage() {
     const fetchSettings = async () => {
       try {
         const data = await adminApi.getSiteSettings();
-        setSettings(data);
+        // Ensure all fields have default values to avoid controlled/uncontrolled warnings
+        setSettings({
+          site_name: data.site_name || '',
+          site_description: data.site_description || '',
+          site_keywords: data.site_keywords || '',
+          site_url: data.site_url || '',
+          email_from: data.email_from || '',
+          home_title: data.home_title || '',
+          home_subtitle: data.home_subtitle || '',
+          home_custom_content: data.home_custom_content || '',
+          footer_text: data.footer_text || '',
+          logo_url: data.logo_url || '',
+        });
       } catch (err) {
         const apiError = err as ApiError;
         setError(apiError.error || 'Failed to fetch settings');
@@ -45,7 +59,19 @@ export default function AdminSettingsPage() {
 
     try {
       const updated = await adminApi.updateSiteSettings(settings);
-      setSettings(updated);
+      // Ensure all fields have default values
+      setSettings({
+        site_name: updated.site_name || '',
+        site_description: updated.site_description || '',
+        site_keywords: updated.site_keywords || '',
+        site_url: updated.site_url || '',
+        email_from: updated.email_from || '',
+        home_title: updated.home_title || '',
+        home_subtitle: updated.home_subtitle || '',
+        home_custom_content: updated.home_custom_content || '',
+        footer_text: updated.footer_text || '',
+        logo_url: updated.logo_url || '',
+      });
       setSuccess('Settings saved successfully!');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
@@ -151,6 +177,44 @@ export default function AdminSettingsPage() {
               {t('admin.settingsPage.logoUrlHint')}
             </p>
           </div>
+
+          <div className="space-y-2">
+            <label htmlFor="site_url" className="text-sm font-medium">
+              {t('admin.settingsPage.siteUrl')}
+            </label>
+            <input
+              id="site_url"
+              type="text"
+              value={settings.site_url}
+              onChange={(e) => setSettings(prev => ({ ...prev, site_url: e.target.value }))}
+              className="w-full px-3 py-2 border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="https://yourdomain.com"
+            />
+            <p className="text-xs text-muted-foreground">
+              {t('admin.settingsPage.siteUrlHint')}
+            </p>
+          </div>
+        </div>
+
+        <div className="border rounded-lg p-6 space-y-4">
+          <h2 className="text-lg font-semibold">{t('admin.settingsPage.emailSettings')}</h2>
+
+          <div className="space-y-2">
+            <label htmlFor="email_from" className="text-sm font-medium">
+              {t('admin.settingsPage.emailFrom')}
+            </label>
+            <input
+              id="email_from"
+              type="email"
+              value={settings.email_from}
+              onChange={(e) => setSettings(prev => ({ ...prev, email_from: e.target.value }))}
+              className="w-full px-3 py-2 border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="noreply@yourdomain.com"
+            />
+            <p className="text-xs text-muted-foreground">
+              {t('admin.settingsPage.emailFromHint')}
+            </p>
+          </div>
         </div>
 
         <div className="border rounded-lg p-6 space-y-4">
@@ -196,7 +260,7 @@ export default function AdminSettingsPage() {
             </label>
             <textarea
               id="home_custom_content"
-              value={settings.home_custom_content || ''}
+              value={settings.home_custom_content}
               onChange={(e) => setSettings(prev => ({ ...prev, home_custom_content: e.target.value }))}
               rows={4}
               className="w-full px-3 py-2 border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary"

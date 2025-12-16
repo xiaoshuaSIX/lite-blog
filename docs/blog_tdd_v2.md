@@ -145,12 +145,23 @@ API：`POST /api/auth/verify-email`
 ---
 
 ### 5.4 邮件发送
-支持：
+
+**当前实现**：AWS SES (Simple Email Service)
+
+需要配置以下环境变量：
+
+| 变量名 | 说明 |
+|--------|------|
+| AWS_ACCESS_KEY_ID | AWS 访问密钥 ID |
+| AWS_SECRET_ACCESS_KEY | AWS 访问密钥 |
+| AWS_REGION | AWS 区域（如 us-east-1） |
+
+备选方案：
 - net/smtp
 - SendGrid/Mailgun/Postmark/阿里企业邮等 SDK
 
 必须实现：
-- 发送限制（60 秒重发）  
+- 发送限制（60 秒重发）
 - token 设置有效期（建议 30 分钟）  
 
 ---

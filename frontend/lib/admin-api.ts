@@ -168,6 +168,8 @@ export interface SiteSettings {
   site_name: string;
   site_description: string;
   site_keywords: string;
+  site_url: string;
+  email_from: string;
   home_title: string;
   home_subtitle: string;
   home_custom_content: string;

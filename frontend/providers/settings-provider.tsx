@@ -14,6 +14,8 @@ const defaultSettings: SiteSettings = {
   site_name: "Lite Blog",
   site_description: "A role-based blog system",
   site_keywords: "blog, articles, technology",
+  site_url: "http://localhost:8080",
+  email_from: "",
   home_title: "Welcome to Lite Blog",
   home_subtitle: "Discover amazing articles and insights",
   home_custom_content: "",
