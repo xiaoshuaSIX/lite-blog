@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Lite Blog",
   description: "A role-based blog system",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

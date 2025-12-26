@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { api, SiteSettings } from "@/lib/api";
+import { DynamicHead } from "@/components/dynamic-head";
 
 interface SettingsContextType {
   settings: SiteSettings | null;
@@ -65,6 +66,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <SettingsContext.Provider value={value}>
+      <DynamicHead />
       {children}
     </SettingsContext.Provider>
   );

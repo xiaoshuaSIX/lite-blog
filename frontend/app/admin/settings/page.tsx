@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react';
 import { adminApi, SiteSettings } from '@/lib/admin-api';
 import { ApiError } from '@/lib/api';
 import { useLanguage } from '@/providers/language-provider';
+import { useSiteSettings } from '@/providers/settings-provider';
 
 export default function AdminSettingsPage() {
   const { t } = useLanguage();
+  const { refresh: refreshGlobalSettings } = useSiteSettings();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -72,6 +74,8 @@ export default function AdminSettingsPage() {
         footer_text: updated.footer_text || '',
         logo_url: updated.logo_url || '',
       });
+      // Refresh global settings to update title and favicon
+      await refreshGlobalSettings();
       setSuccess('Settings saved successfully!');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
