@@ -1,12 +1,13 @@
-'use client';
-
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import { useSiteSettings } from '@/providers/settings-provider';
+import { SiteSettings } from '@/lib/api';
 
-export function HeroSection() {
-  const { settings } = useSiteSettings();
+interface HeroSectionProps {
+  settings: SiteSettings | null;
+}
+
+export function HeroSection({ settings }: HeroSectionProps) {
 
   return (
     <section className="text-center mb-12">

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { HeroSection } from '@/components/home/hero-section';
-import { api, ArticleListItem } from '@/lib/api';
+import { api, ArticleListItem, SiteSettings } from '@/lib/api';
 
 async function getArticles() {
   try {
@@ -12,6 +12,14 @@ async function getArticles() {
     return response.articles;
   } catch {
     return [];
+  }
+}
+
+async function getSiteSettings(): Promise<SiteSettings | null> {
+  try {
+    return await api.getSiteSettings();
+  } catch {
+    return null;
   }
 }
 
@@ -53,7 +61,10 @@ function ArticleRow({ article }: { article: ArticleListItem }) {
 }
 
 export default async function Home() {
-  const articles = await getArticles();
+  const [articles, settings] = await Promise.all([
+    getArticles(),
+    getSiteSettings(),
+  ]);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden">
@@ -65,7 +76,7 @@ export default async function Home() {
       <main className="flex-1 container max-w-3xl mx-auto px-6 py-12 md:py-24 relative z-10">
         {/* Hero Section */}
         <div className="mb-20 md:mb-32 text-center">
-          <HeroSection />
+          <HeroSection settings={settings} />
         </div>
 
         {/* Articles List */}

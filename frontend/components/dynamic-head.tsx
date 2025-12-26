@@ -16,14 +16,22 @@ export function DynamicHead() {
 
     // Update favicon if logo_url is set
     if (settings.logo_url) {
-      let link: HTMLLinkElement | null =
-        document.querySelector("link[rel~='icon']");
-      if (!link) {
-        link = document.createElement("link");
-        link.rel = "icon";
-        document.head.appendChild(link);
-      }
+      // Remove all existing favicon links to avoid conflicts
+      const existingLinks = document.querySelectorAll(
+        'link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
+      );
+      existingLinks.forEach((link) => link.remove());
+
+      // Create new favicon link
+      const link = document.createElement("link");
+      link.rel = "icon";
+      link.type = settings.logo_url.endsWith(".svg")
+        ? "image/svg+xml"
+        : settings.logo_url.endsWith(".png")
+          ? "image/png"
+          : "image/x-icon";
       link.href = settings.logo_url;
+      document.head.appendChild(link);
     }
   }, [settings]);
 
