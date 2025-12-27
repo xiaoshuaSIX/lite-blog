@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { adminApi, UpdateArticleRequest } from '@/lib/admin-api';
 import { ApiError } from '@/lib/api';
 
@@ -15,7 +16,6 @@ export default function EditArticlePage({
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
   const [formData, setFormData] = useState<UpdateArticleRequest>({
     title: '',
     slug: '',
@@ -41,7 +41,7 @@ export default function EditArticlePage({
         });
       } catch (err) {
         const apiError = err as ApiError;
-        setError(apiError.error || 'Failed to fetch article');
+        toast.error(apiError.error || 'Failed to fetch article');
       } finally {
         setLoading(false);
       }
@@ -51,15 +51,15 @@ export default function EditArticlePage({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setSaving(true);
 
     try {
       await adminApi.updateArticle(parseInt(id), formData);
+      toast.success('Article updated successfully!');
       router.push('/admin/articles');
     } catch (err) {
       const apiError = err as ApiError;
-      setError(apiError.error || 'Failed to update article');
+      toast.error(apiError.error || 'Failed to update article');
     } finally {
       setSaving(false);
     }
@@ -84,12 +84,6 @@ export default function EditArticlePage({
           Cancel
         </Link>
       </div>
-
-      {error && (
-        <div className="bg-destructive/10 text-destructive p-4 rounded-md mb-6">
-          {error}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">

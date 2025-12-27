@@ -207,7 +207,12 @@
         "title": "Manage Membership",
         "expireDate": "Membership Expiration Date",
         "hint": "Leave empty to remove membership"
-      }
+      },
+      "statusUpdated": "User status updated",
+      "userDeleted": "User deleted",
+      "roleAssigned": "Role assigned successfully",
+      "roleRemoved": "Role removed successfully",
+      "membershipUpdated": "Membership updated"
     }
   },
   "settings": {

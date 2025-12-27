@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { adminApi, CreateArticleRequest } from '@/lib/admin-api';
 import { ApiError } from '@/lib/api';
 
 export default function NewArticlePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [formData, setFormData] = useState<CreateArticleRequest>({
     title: '',
     slug: '',
@@ -40,15 +40,15 @@ export default function NewArticlePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
 
     try {
       await adminApi.createArticle(formData);
+      toast.success('Article created successfully!');
       router.push('/admin/articles');
     } catch (err) {
       const apiError = err as ApiError;
-      setError(apiError.error || 'Failed to create article');
+      toast.error(apiError.error || 'Failed to create article');
     } finally {
       setLoading(false);
     }
@@ -65,12 +65,6 @@ export default function NewArticlePage() {
           Cancel
         </Link>
       </div>
-
-      {error && (
-        <div className="bg-destructive/10 text-destructive p-4 rounded-md mb-6">
-          {error}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">

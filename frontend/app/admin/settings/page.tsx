@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { adminApi, SiteSettings } from '@/lib/admin-api';
 import { ApiError } from '@/lib/api';
 import { useLanguage } from '@/providers/language-provider';
@@ -11,8 +12,6 @@ export default function AdminSettingsPage() {
   const { refresh: refreshGlobalSettings } = useSiteSettings();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [settings, setSettings] = useState<SiteSettings>({
     site_name: '',
     site_description: '',
@@ -45,7 +44,7 @@ export default function AdminSettingsPage() {
         });
       } catch (err) {
         const apiError = err as ApiError;
-        setError(apiError.error || 'Failed to fetch settings');
+        toast.error(apiError.error || 'Failed to fetch settings');
       } finally {
         setLoading(false);
       }
@@ -55,8 +54,6 @@ export default function AdminSettingsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
     setSaving(true);
 
     try {
@@ -76,11 +73,10 @@ export default function AdminSettingsPage() {
       });
       // Refresh global settings to update title and favicon
       await refreshGlobalSettings();
-      setSuccess('Settings saved successfully!');
-      setTimeout(() => setSuccess(''), 3000);
+      toast.success(t('admin.settingsPage.success'));
     } catch (err) {
       const apiError = err as ApiError;
-      setError(apiError.error || 'Failed to save settings');
+      toast.error(apiError.error || 'Failed to save settings');
     } finally {
       setSaving(false);
     }
@@ -97,18 +93,6 @@ export default function AdminSettingsPage() {
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">{t('admin.settings')}</h1>
-
-      {error && (
-        <div className="bg-destructive/10 text-destructive p-4 rounded-md mb-6">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 p-4 rounded-md mb-6">
-          {t('admin.settingsPage.success')}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="border rounded-lg p-6 space-y-4">

@@ -207,7 +207,12 @@
         "title": "管理会员",
         "expireDate": "会员到期日期",
         "hint": "留空则移除会员资格"
-      }
+      },
+      "statusUpdated": "用户状态已更新",
+      "userDeleted": "用户已删除",
+      "roleAssigned": "角色分配成功",
+      "roleRemoved": "角色移除成功",
+      "membershipUpdated": "会员状态已更新"
     }
   },
   "settings": {

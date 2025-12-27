@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { adminApi, type UserListItem, type UserListResponse, type RoleInfo } from '@/lib/admin-api';
 import { ApiError } from '@/lib/api';
 import { useLanguage } from '@/providers/language-provider';
@@ -60,10 +61,11 @@ export default function AdminUsersPage() {
 
     try {
       await adminApi.updateUserStatus(user.id, newStatus);
+      toast.success(t('admin.usersPage.statusUpdated'));
       fetchUsers();
     } catch (err) {
       const apiError = err as ApiError;
-      alert(apiError.error || t('common.error'));
+      toast.error(apiError.error || t('common.error'));
     }
   };
 
@@ -74,10 +76,11 @@ export default function AdminUsersPage() {
 
     try {
       await adminApi.deleteUser(user.id);
+      toast.success(t('admin.usersPage.userDeleted'));
       fetchUsers();
     } catch (err) {
       const apiError = err as ApiError;
-      alert(apiError.error || t('common.error'));
+      toast.error(apiError.error || t('common.error'));
     }
   };
 
@@ -97,11 +100,12 @@ export default function AdminUsersPage() {
 
     try {
       await adminApi.assignRole(selectedUser.id, roleCode);
+      toast.success(t('admin.usersPage.roleAssigned'));
       fetchUsers();
       setShowRoleModal(false);
     } catch (err) {
       const apiError = err as ApiError;
-      alert(apiError.error || t('common.error'));
+      toast.error(apiError.error || t('common.error'));
     }
   };
 
@@ -110,11 +114,12 @@ export default function AdminUsersPage() {
 
     try {
       await adminApi.removeRole(selectedUser.id, roleCode);
+      toast.success(t('admin.usersPage.roleRemoved'));
       fetchUsers();
       setShowRoleModal(false);
     } catch (err) {
       const apiError = err as ApiError;
-      alert(apiError.error || t('common.error'));
+      toast.error(apiError.error || t('common.error'));
     }
   };
 
@@ -124,11 +129,12 @@ export default function AdminUsersPage() {
     try {
       const expireAt = membershipDate ? new Date(membershipDate).toISOString() : null;
       await adminApi.updateUserMembership(selectedUser.id, expireAt);
+      toast.success(t('admin.usersPage.membershipUpdated'));
       fetchUsers();
       setShowMembershipModal(false);
     } catch (err) {
       const apiError = err as ApiError;
-      alert(apiError.error || t('common.error'));
+      toast.error(apiError.error || t('common.error'));
     }
   };
 
