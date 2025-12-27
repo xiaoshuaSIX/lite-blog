@@ -1,26 +1,31 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSiteSettings } from "@/providers/settings-provider";
+
+// Track what we've already applied to avoid duplicate DOM operations
+let appliedTitle = "";
+let appliedFavicon = "";
 
 export function DynamicHead() {
   const { settings } = useSiteSettings();
+  const faviconRef = useRef<HTMLLinkElement | null>(null);
 
   useEffect(() => {
     if (!settings) return;
 
-    // Update document title
-    if (settings.site_name) {
+    // Update document title only if changed
+    if (settings.site_name && settings.site_name !== appliedTitle) {
       document.title = settings.site_name;
+      appliedTitle = settings.site_name;
     }
 
-    // Update favicon if logo_url is set
-    if (settings.logo_url) {
-      // Remove all existing favicon links to avoid conflicts
-      const existingLinks = document.querySelectorAll(
-        'link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
-      );
-      existingLinks.forEach((link) => link.remove());
+    // Update favicon only if changed
+    if (settings.logo_url && settings.logo_url !== appliedFavicon) {
+      // Remove our previously created favicon if exists
+      if (faviconRef.current && faviconRef.current.parentNode) {
+        faviconRef.current.parentNode.removeChild(faviconRef.current);
+      }
 
       // Create new favicon link
       const link = document.createElement("link");
@@ -31,7 +36,11 @@ export function DynamicHead() {
           ? "image/png"
           : "image/x-icon";
       link.href = settings.logo_url;
+      link.id = "dynamic-favicon";
       document.head.appendChild(link);
+
+      faviconRef.current = link;
+      appliedFavicon = settings.logo_url;
     }
   }, [settings]);
 

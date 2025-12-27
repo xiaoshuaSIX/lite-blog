@@ -21,21 +21,31 @@ const LanguageSwitcher = dynamic(
   }
 );
 
+// Cache user data at module level to prevent refetching on every navigation
+let cachedUser: User | null = null;
+let userFetched = false;
+
 export function Header() {
   const router = useRouter();
   const { t } = useLanguage();
   const { settings } = useSiteSettings();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(cachedUser);
+  const [loading, setLoading] = useState(!userFetched);
 
   useEffect(() => {
+    // Skip if already fetched
+    if (userFetched) return;
+
     const checkAuth = async () => {
       try {
         const userData = await api.getMe();
+        cachedUser = userData;
         setUser(userData);
       } catch {
+        cachedUser = null;
         setUser(null);
       } finally {
+        userFetched = true;
         setLoading(false);
       }
     };
@@ -45,6 +55,9 @@ export function Header() {
   const handleLogout = async () => {
     try {
       await api.logout();
+      // Clear cache on logout
+      cachedUser = null;
+      userFetched = false;
       setUser(null);
       router.refresh();
     } catch (error) {

@@ -31,27 +31,39 @@ const SettingsContext = React.createContext<SettingsContextType>({
   refresh: async () => {},
 });
 
+// Cache settings at module level to prevent refetching on every navigation
+let cachedSettings: SiteSettings | null = null;
+let settingsFetched = false;
+
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = React.useState<SiteSettings | null>(null);
-  const [loading, setLoading] = React.useState(true);
+  const [settings, setSettings] = React.useState<SiteSettings | null>(cachedSettings);
+  const [loading, setLoading] = React.useState(!settingsFetched);
   const [error, setError] = React.useState<string | null>(null);
 
-  const fetchSettings = React.useCallback(async () => {
+  const fetchSettings = React.useCallback(async (force = false) => {
+    // Skip if already fetched and not forcing refresh
+    if (settingsFetched && !force) return;
+
     try {
       setLoading(true);
       setError(null);
       const data = await api.getSiteSettings();
+      cachedSettings = data;
       setSettings(data);
     } catch {
       setError("Failed to load settings");
+      cachedSettings = defaultSettings;
       setSettings(defaultSettings);
     } finally {
+      settingsFetched = true;
       setLoading(false);
     }
   }, []);
 
   React.useEffect(() => {
-    fetchSettings();
+    if (!settingsFetched) {
+      fetchSettings();
+    }
   }, [fetchSettings]);
 
   const value = React.useMemo(
