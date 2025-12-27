@@ -6,6 +6,7 @@ import { useSiteSettings } from "@/providers/settings-provider";
 // Track what we've already applied to avoid duplicate DOM operations
 let appliedTitle = "";
 let appliedFavicon = "";
+let defaultFaviconsRemoved = false;
 
 export function DynamicHead() {
   const { settings } = useSiteSettings();
@@ -22,7 +23,16 @@ export function DynamicHead() {
 
     // Update favicon only if changed
     if (settings.logo_url && settings.logo_url !== appliedFavicon) {
-      // Remove our previously created favicon if exists
+      // Remove default favicons only once on first custom favicon set
+      if (!defaultFaviconsRemoved) {
+        const defaultFavicons = document.querySelectorAll(
+          'link[rel="icon"]:not(#dynamic-favicon), link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
+        );
+        defaultFavicons.forEach((el) => el.remove());
+        defaultFaviconsRemoved = true;
+      }
+
+      // Remove our previously created dynamic favicon if exists
       if (faviconRef.current && faviconRef.current.parentNode) {
         faviconRef.current.parentNode.removeChild(faviconRef.current);
       }
