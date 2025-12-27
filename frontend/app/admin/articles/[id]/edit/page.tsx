@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { adminApi, UpdateArticleRequest } from '@/lib/admin-api';
@@ -13,7 +12,6 @@ export default function EditArticlePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<UpdateArticleRequest>({
@@ -56,7 +54,7 @@ export default function EditArticlePage({
     try {
       await adminApi.updateArticle(parseInt(id), formData);
       toast.success('Article updated successfully!');
-      router.push('/admin/articles');
+      window.location.href = '/admin/articles';
     } catch (err) {
       const apiError = err as ApiError;
       toast.error(apiError.error || 'Failed to update article');

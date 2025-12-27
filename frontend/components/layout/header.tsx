@@ -25,6 +25,12 @@ const LanguageSwitcher = dynamic(
 let cachedUser: User | null = null;
 let userFetched = false;
 
+// Export function to reset cache after login/logout
+export function resetUserCache() {
+  cachedUser = null;
+  userFetched = false;
+}
+
 export function Header() {
   const router = useRouter();
   const { t } = useLanguage();

@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { adminApi, CreateArticleRequest } from '@/lib/admin-api';
 import { ApiError } from '@/lib/api';
 
 export default function NewArticlePage() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<CreateArticleRequest>({
     title: '',
@@ -45,7 +43,7 @@ export default function NewArticlePage() {
     try {
       await adminApi.createArticle(formData);
       toast.success('Article created successfully!');
-      router.push('/admin/articles');
+      window.location.href = '/admin/articles';
     } catch (err) {
       const apiError = err as ApiError;
       toast.error(apiError.error || 'Failed to create article');

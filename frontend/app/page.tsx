@@ -33,8 +33,8 @@ function ArticleRow({ article }: { article: ArticleListItem }) {
     : null;
 
   return (
-    <Link 
-      href={`/posts/${article.slug}`} 
+    <Link
+      href={`/posts/${article.slug}`}
       className="group relative flex items-center justify-between gap-4 p-4 -mx-4 rounded-xl transition-all duration-300 hover:bg-accent/50 hover:backdrop-blur-md border border-transparent hover:border-border/50"
     >
       <div className="flex flex-col gap-1 min-w-0">
@@ -43,7 +43,7 @@ function ArticleRow({ article }: { article: ArticleListItem }) {
         </h2>
         {/* Optional: Show small excerpt or tags if needed later, kept minimal for now */}
       </div>
-      
+
       <div className="flex items-center gap-3 shrink-0">
         {article.visibility === 'member_full' && (
           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 uppercase tracking-wider">

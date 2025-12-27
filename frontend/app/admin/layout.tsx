@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api, User } from '@/lib/api';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
@@ -20,9 +19,6 @@ export default function AdminLayout({
   children: React.ReactNode;
 
 }) {
-
-  const router = useRouter();
-
   const { t } = useLanguage();
 
   const [user, setUser] = useState<User | null>(null);
@@ -50,18 +46,18 @@ export default function AdminLayout({
       try {
         const userData = await api.getMe();
         if (!userData.roles?.includes('admin')) {
-          router.push('/');
+          window.location.href = '/';
           return;
         }
         setUser(userData);
       } catch {
-        router.push('/login');
+        window.location.href = '/login';
       } finally {
         setLoading(false);
       }
     };
     checkAuth();
-  }, [router]);
+  }, []);
 
   if (loading) {
     return (

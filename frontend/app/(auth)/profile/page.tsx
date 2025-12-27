@@ -1,12 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { api, User, ApiError } from '@/lib/api';
 import { useLanguage } from '@/providers/language-provider';
 
 export default function ProfilePage() {
-  const router = useRouter();
   const { t } = useLanguage();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -20,13 +18,13 @@ export default function ProfilePage() {
         const userData = await api.getMe();
         setUser(userData);
       } catch {
-        router.push('/login');
+        window.location.href = '/login';
       } finally {
         setLoading(false);
       }
     };
     fetchUser();
-  }, [router]);
+  }, []);
 
   const handleResendVerification = async () => {
     setResending(true);

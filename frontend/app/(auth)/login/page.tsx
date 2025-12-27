@@ -1,12 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api, ApiError } from '@/lib/api';
+import { resetUserCache } from '@/components/layout/header';
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,8 +18,8 @@ export default function LoginPage() {
 
     try {
       await api.login(email, password);
-      router.push('/');
-      router.refresh();
+      resetUserCache();
+      window.location.href = '/';
     } catch (err) {
       const apiError = err as ApiError;
       setError(apiError.error || 'Login failed');
