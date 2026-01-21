@@ -57,8 +57,35 @@ class AdminApiClient {
   }
 
   // Article management
-  async getArticles(page: number = 1, pageSize: number = 10): Promise<AdminArticleListResponse> {
-    return this.request(`/api/admin/articles?page=${page}&page_size=${pageSize}`);
+  async getArticles(
+    page: number = 1, 
+    pageSize: number = 10,
+    filters?: {
+      search?: string;
+      status?: number;
+      visibility?: string;
+      is_pinned?: boolean;
+    }
+  ): Promise<AdminArticleListResponse> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      page_size: pageSize.toString(),
+    });
+    
+    if (filters?.search) {
+      params.append('search', filters.search);
+    }
+    if (filters?.status !== undefined) {
+      params.append('status', filters.status.toString());
+    }
+    if (filters?.visibility) {
+      params.append('visibility', filters.visibility);
+    }
+    if (filters?.is_pinned !== undefined) {
+      params.append('is_pinned', filters.is_pinned.toString());
+    }
+
+    return this.request(`/api/admin/articles?${params.toString()}`);
   }
 
   async getArticle(id: number): Promise<Article> {
@@ -93,6 +120,18 @@ class AdminApiClient {
 
   async unpublishArticle(id: number): Promise<Article> {
     return this.request(`/api/admin/articles/${id}/unpublish`, {
+      method: 'POST',
+    });
+  }
+
+  async pinArticle(id: number): Promise<Article> {
+    return this.request(`/api/admin/articles/${id}/pin`, {
+      method: 'POST',
+    });
+  }
+
+  async unpinArticle(id: number): Promise<Article> {
+    return this.request(`/api/admin/articles/${id}/unpin`, {
       method: 'POST',
     });
   }

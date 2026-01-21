@@ -5,6 +5,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// ArticleFilters represents filters for article queries
+type ArticleFilters struct {
+	Search     string
+	Status     *int
+	Visibility string
+	IsPinned   *bool
+}
+
 type ArticleRepository struct {
 	db *gorm.DB
 }
@@ -61,11 +69,11 @@ func (r *ArticleRepository) FindPublished(page, pageSize int) ([]model.Article, 
 		return nil, 0, err
 	}
 
-	// Get paginated results
+	// Get paginated results - pinned articles first, then by published_at DESC
 	offset := (page - 1) * pageSize
 	err = r.db.Preload("Author").
 		Where("status = ? AND visibility != ?", model.ArticleStatusPublished, model.VisibilityHidden).
-		Order("published_at DESC").
+		Order("is_pinned DESC, published_at DESC").
 		Offset(offset).
 		Limit(pageSize).
 		Find(&articles).Error
@@ -111,4 +119,52 @@ func (r *ArticleRepository) ExistsBySlugExcludingID(slug string, excludeID uint)
 	var count int64
 	r.db.Model(&model.Article{}).Where("slug = ? AND id != ?", slug, excludeID).Count(&count)
 	return count > 0
+}
+
+// FindAllWithFilters finds all articles with filters and pagination (for admin)
+func (r *ArticleRepository) FindAllWithFilters(page, pageSize int, filters ArticleFilters) ([]model.Article, int64, error) {
+	var articles []model.Article
+	var total int64
+
+	query := r.db.Model(&model.Article{})
+
+	// Apply search filter
+	if filters.Search != "" {
+		searchPattern := "%" + filters.Search + "%"
+		query = query.Where("title LIKE ? OR slug LIKE ?", searchPattern, searchPattern)
+	}
+
+	// Apply status filter
+	if filters.Status != nil {
+		query = query.Where("status = ?", *filters.Status)
+	}
+
+	// Apply visibility filter
+	if filters.Visibility != "" {
+		query = query.Where("visibility = ?", filters.Visibility)
+	}
+
+	// Apply pinned filter
+	if filters.IsPinned != nil {
+		query = query.Where("is_pinned = ?", *filters.IsPinned)
+	}
+
+	// Count total
+	err := query.Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Get paginated results
+	offset := (page - 1) * pageSize
+	err = query.Preload("Author").
+		Order("is_pinned DESC, created_at DESC").
+		Offset(offset).
+		Limit(pageSize).
+		Find(&articles).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return articles, total, nil
 }

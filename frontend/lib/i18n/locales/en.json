@@ -16,6 +16,7 @@
   "nav": {
     "home": "Home",
     "articles": "Articles",
+    "archive": "Archive",
     "about": "About",
     "login": "Login",
     "register": "Register",
@@ -76,7 +77,14 @@
     "submitComment": "Submit Comment",
     "loginToComment": "Login to comment",
     "memberOnly": "Members only",
-    "upgradeToRead": "Upgrade to member to read full article"
+    "upgradeToRead": "Upgrade to member to read full article",
+    "viewAll": "View All",
+    "latestWritings": "Latest Writings"
+  },
+  "archive": {
+    "title": "Archive",
+    "allArticles": "All articles",
+    "articlesCount": "articles"
   },
   "admin": {
     "dashboard": "Dashboard",
@@ -132,10 +140,20 @@
       "newArticle": "New Article",
       "noArticles": "No articles yet.",
       "createFirst": "Create your first article",
+      "filters": {
+        "searchPlaceholder": "Search by title or slug...",
+        "allStatuses": "All Statuses",
+        "allVisibilities": "All Visibilities",
+        "allPinned": "All (Pinned)",
+        "pinnedOnly": "Pinned Only",
+        "notPinned": "Not Pinned",
+        "clearFilters": "Clear Filters"
+      },
       "table": {
         "title": "Title",
         "status": "Status",
         "visibility": "Visibility",
+        "pinned": "Pinned",
         "created": "Created",
         "actions": "Actions"
       },
@@ -152,8 +170,14 @@
         "edit": "Edit",
         "publish": "Publish",
         "unpublish": "Unpublish",
+        "pin": "Pin",
+        "unpin": "Unpin",
         "delete": "Delete",
         "deleteConfirm": "Are you sure you want to delete this article?"
+      },
+      "pinned": {
+        "yes": "Yes",
+        "no": "No"
       }
     },
     "usersPage": {

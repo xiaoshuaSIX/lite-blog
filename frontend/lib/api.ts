@@ -39,6 +39,7 @@ export interface Article {
   preview_percentage: number;
   preview_min_chars: number;
   preview_smart_paragraph: boolean;
+  is_pinned: boolean;
   status: number;
   published_at?: string;
   created_at: string;
@@ -54,6 +55,7 @@ export interface ArticleListItem {
   author_id: number;
   author_email?: string;
   visibility: 'hidden' | 'public_full' | 'member_full';
+  is_pinned: boolean;
   status: number;
   published_at?: string;
   created_at: string;

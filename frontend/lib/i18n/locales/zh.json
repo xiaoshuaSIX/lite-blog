@@ -16,6 +16,7 @@
   "nav": {
     "home": "首页",
     "articles": "文章",
+    "archive": "归档",
     "about": "关于",
     "login": "登录",
     "register": "注册",
@@ -76,7 +77,14 @@
     "submitComment": "发表评论",
     "loginToComment": "登录后发表评论",
     "memberOnly": "会员专享内容",
-    "upgradeToRead": "升级为会员阅读全文"
+    "upgradeToRead": "升级为会员阅读全文",
+    "viewAll": "查看全部",
+    "latestWritings": "最新文章"
+  },
+  "archive": {
+    "title": "文章归档",
+    "allArticles": "全部文章",
+    "articlesCount": "篇文章"
   },
   "admin": {
     "dashboard": "仪表盘",
@@ -132,10 +140,20 @@
       "newArticle": "新建文章",
       "noArticles": "暂无文章",
       "createFirst": "创建你的第一篇文章",
+      "filters": {
+        "searchPlaceholder": "搜索标题或 slug...",
+        "allStatuses": "全部状态",
+        "allVisibilities": "全部可见性",
+        "allPinned": "全部（置顶）",
+        "pinnedOnly": "仅置顶",
+        "notPinned": "未置顶",
+        "clearFilters": "清除筛选"
+      },
       "table": {
         "title": "标题",
         "status": "状态",
         "visibility": "可见性",
+        "pinned": "置顶",
         "created": "创建时间",
         "actions": "操作"
       },
@@ -152,8 +170,14 @@
         "edit": "编辑",
         "publish": "发布",
         "unpublish": "取消发布",
+        "pin": "置顶",
+        "unpin": "取消置顶",
         "delete": "删除",
         "deleteConfirm": "确定要删除这篇文章吗？"
+      },
+      "pinned": {
+        "yes": "是",
+        "no": "否"
       }
     },
     "usersPage": {

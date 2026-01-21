@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
+import { Pin, ArrowRight } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { HeroSection } from '@/components/home/hero-section';
@@ -37,11 +38,13 @@ function ArticleRow({ article }: { article: ArticleListItem }) {
       href={`/posts/${article.slug}`}
       className="group relative flex items-center justify-between gap-4 p-4 -mx-4 rounded-xl transition-all duration-300 hover:bg-accent/50 hover:backdrop-blur-md border border-transparent hover:border-border/50"
     >
-      <div className="flex flex-col gap-1 min-w-0">
+      <div className="flex items-center gap-3 min-w-0">
+        {article.is_pinned && (
+          <Pin className="w-4 h-4 text-primary shrink-0 fill-primary/20" />
+        )}
         <h2 className="text-lg font-medium text-foreground/90 group-hover:text-primary transition-colors truncate">
           {article.title}
         </h2>
-        {/* Optional: Show small excerpt or tags if needed later, kept minimal for now */}
       </div>
 
       <div className="flex items-center gap-3 shrink-0">
@@ -85,6 +88,13 @@ export default async function Home() {
             <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">
               Latest Writings
             </h2>
+            <Link 
+              href="/archive"
+              className="group flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              View All
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
           
           {articles.length > 0 ? (

@@ -26,6 +26,16 @@ type ListArticlesRequest struct {
 	PageSize int `form:"page_size,default=10"`
 }
 
+// AdminListArticlesRequest represents the admin list articles request with filters
+type AdminListArticlesRequest struct {
+	Page       int    `form:"page,default=1"`
+	PageSize   int    `form:"page_size,default=10"`
+	Search     string `form:"search"`
+	Status     *int   `form:"status"`
+	Visibility string `form:"visibility"`
+	IsPinned   *bool  `form:"is_pinned"`
+}
+
 // ArticleListResponse represents the paginated list response
 type ArticleListResponse struct {
 	Articles   []service.ArticleListItem `json:"articles"`
@@ -145,7 +155,7 @@ type UpdateArticleRequest struct {
 
 // List returns all articles for admin
 func (h *AdminArticleHandler) List(c *gin.Context) {
-	var req ListArticlesRequest
+	var req AdminListArticlesRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid query parameters",
@@ -161,7 +171,15 @@ func (h *AdminArticleHandler) List(c *gin.Context) {
 		req.PageSize = 10
 	}
 
-	articles, total, err := h.articleService.ListAllArticles(req.Page, req.PageSize)
+	// Build filters
+	filters := service.ArticleFilters{
+		Search:     req.Search,
+		Status:     req.Status,
+		Visibility: req.Visibility,
+		IsPinned:   req.IsPinned,
+	}
+
+	articles, total, err := h.articleService.ListAllArticlesWithFilters(req.Page, req.PageSize, filters)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to fetch articles",
@@ -417,6 +435,68 @@ func (h *AdminArticleHandler) Unpublish(c *gin.Context) {
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to unpublish article",
+			"code":  "INTERNAL_ERROR",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, article)
+}
+
+// Pin pins an article
+func (h *AdminArticleHandler) Pin(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid article ID",
+			"code":  "INVALID_REQUEST",
+		})
+		return
+	}
+
+	article, err := h.articleService.PinArticle(uint(id))
+	if err != nil {
+		if err == service.ErrArticleNotFound {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": "Article not found",
+				"code":  "NOT_FOUND",
+			})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to pin article",
+			"code":  "INTERNAL_ERROR",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, article)
+}
+
+// Unpin unpins an article
+func (h *AdminArticleHandler) Unpin(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid article ID",
+			"code":  "INVALID_REQUEST",
+		})
+		return
+	}
+
+	article, err := h.articleService.UnpinArticle(uint(id))
+	if err != nil {
+		if err == service.ErrArticleNotFound {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": "Article not found",
+				"code":  "NOT_FOUND",
+			})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to unpin article",
 			"code":  "INTERNAL_ERROR",
 		})
 		return

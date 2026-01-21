@@ -16,6 +16,14 @@ var (
 	ErrInvalidSlug     = errors.New("invalid slug format")
 )
 
+// ArticleFilters represents filters for article queries
+type ArticleFilters struct {
+	Search     string
+	Status     *int
+	Visibility string
+	IsPinned   *bool
+}
+
 type ArticleService struct {
 	articleRepo *repository.ArticleRepository
 }
@@ -38,6 +46,7 @@ type ArticleResponse struct {
 	PreviewPercentage     int                     `json:"preview_percentage"`
 	PreviewMinChars       int                     `json:"preview_min_chars"`
 	PreviewSmartParagraph bool                    `json:"preview_smart_paragraph"`
+	IsPinned              bool                    `json:"is_pinned"`
 	Status                model.ArticleStatus     `json:"status"`
 	PublishedAt           *time.Time              `json:"published_at,omitempty"`
 	CreatedAt             time.Time               `json:"created_at"`
@@ -54,6 +63,7 @@ type ArticleListItem struct {
 	AuthorID    uint                    `json:"author_id"`
 	AuthorEmail string                  `json:"author_email,omitempty"`
 	Visibility  model.ArticleVisibility `json:"visibility"`
+	IsPinned    bool                    `json:"is_pinned"`
 	Status      model.ArticleStatus     `json:"status"`
 	PublishedAt *time.Time              `json:"published_at,omitempty"`
 	CreatedAt   time.Time               `json:"created_at"`
@@ -170,6 +180,38 @@ func (s *ArticleService) UnpublishArticle(id uint) (*model.Article, error) {
 	return article, nil
 }
 
+// PinArticle pins an article
+func (s *ArticleService) PinArticle(id uint) (*model.Article, error) {
+	article, err := s.articleRepo.FindByID(id)
+	if err != nil {
+		return nil, ErrArticleNotFound
+	}
+
+	article.IsPinned = true
+
+	if err := s.articleRepo.Update(article); err != nil {
+		return nil, err
+	}
+
+	return article, nil
+}
+
+// UnpinArticle unpins an article
+func (s *ArticleService) UnpinArticle(id uint) (*model.Article, error) {
+	article, err := s.articleRepo.FindByID(id)
+	if err != nil {
+		return nil, ErrArticleNotFound
+	}
+
+	article.IsPinned = false
+
+	if err := s.articleRepo.Update(article); err != nil {
+		return nil, err
+	}
+
+	return article, nil
+}
+
 // DeleteArticle deletes an article
 func (s *ArticleService) DeleteArticle(id uint) error {
 	return s.articleRepo.Delete(id)
@@ -229,6 +271,7 @@ func (s *ArticleService) GetArticleBySlug(slug string, user *model.User) (*Artic
 		PreviewPercentage:     article.PreviewPercentage,
 		PreviewMinChars:       article.PreviewMinChars,
 		PreviewSmartParagraph: article.PreviewSmartParagraph,
+		IsPinned:              article.IsPinned,
 		Status:                article.Status,
 		PublishedAt:           article.PublishedAt,
 		CreatedAt:             article.CreatedAt,
@@ -262,6 +305,7 @@ func (s *ArticleService) ListPublishedArticles(page, pageSize int) ([]ArticleLis
 			Excerpt:     excerpt,
 			AuthorID:    article.AuthorID,
 			Visibility:  article.Visibility,
+			IsPinned:    article.IsPinned,
 			Status:      article.Status,
 			PublishedAt: article.PublishedAt,
 			CreatedAt:   article.CreatedAt,
@@ -293,6 +337,47 @@ func (s *ArticleService) ListAllArticles(page, pageSize int) ([]ArticleListItem,
 			Excerpt:     excerpt,
 			AuthorID:    article.AuthorID,
 			Visibility:  article.Visibility,
+			IsPinned:    article.IsPinned,
+			Status:      article.Status,
+			PublishedAt: article.PublishedAt,
+			CreatedAt:   article.CreatedAt,
+		}
+
+		if article.Author.ID != 0 {
+			items[i].AuthorEmail = article.Author.Email
+		}
+	}
+
+	return items, total, nil
+}
+
+// ListAllArticlesWithFilters returns a paginated list of all articles with filters (for admin)
+func (s *ArticleService) ListAllArticlesWithFilters(page, pageSize int, filters ArticleFilters) ([]ArticleListItem, int64, error) {
+	// Convert service filters to repository filters
+	repoFilters := repository.ArticleFilters{
+		Search:     filters.Search,
+		Status:     filters.Status,
+		Visibility: filters.Visibility,
+		IsPinned:   filters.IsPinned,
+	}
+
+	articles, total, err := s.articleRepo.FindAllWithFilters(page, pageSize, repoFilters)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	items := make([]ArticleListItem, len(articles))
+	for i, article := range articles {
+		excerpt := s.generateExcerpt(article.Content, 200)
+
+		items[i] = ArticleListItem{
+			ID:          article.ID,
+			Title:       article.Title,
+			Slug:        article.Slug,
+			Excerpt:     excerpt,
+			AuthorID:    article.AuthorID,
+			Visibility:  article.Visibility,
+			IsPinned:    article.IsPinned,
 			Status:      article.Status,
 			PublishedAt: article.PublishedAt,
 			CreatedAt:   article.CreatedAt,

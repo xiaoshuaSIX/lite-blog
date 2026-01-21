@@ -112,6 +112,8 @@ func Setup(cfg *config.Config, db *gorm.DB) *gin.Engine {
 			admin.DELETE("/articles/:id", adminArticleHandler.Delete)
 			admin.POST("/articles/:id/publish", adminArticleHandler.Publish)
 			admin.POST("/articles/:id/unpublish", adminArticleHandler.Unpublish)
+			admin.POST("/articles/:id/pin", adminArticleHandler.Pin)
+			admin.POST("/articles/:id/unpin", adminArticleHandler.Unpin)
 
 			// Comment management
 			admin.DELETE("/comments/:id", adminCommentHandler.Delete)

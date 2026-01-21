@@ -35,6 +35,7 @@ type Article struct {
 	PreviewPercentage     int               `gorm:"default:30" json:"preview_percentage"`
 	PreviewMinChars       int               `gorm:"default:200" json:"preview_min_chars"`
 	PreviewSmartParagraph bool              `gorm:"default:true" json:"preview_smart_paragraph"`
+	IsPinned              bool              `gorm:"default:false;index" json:"is_pinned"`
 	Status                ArticleStatus     `gorm:"default:0" json:"status"`
 	PublishedAt           *time.Time        `json:"published_at,omitempty"`
 	CreatedAt             time.Time         `json:"created_at"`
