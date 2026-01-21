@@ -1,25 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { useLanguage } from "@/providers/language-provider";
 import { useSiteSettings } from "@/providers/settings-provider";
 import { api, User } from "@/lib/api";
-
-// Hydration-safe: render language switcher only on client to avoid Radix ID mismatches between server/client.
-const LanguageSwitcher = dynamic(
-  () =>
-    import("@/components/language-switcher").then(
-      (mod) => mod.LanguageSwitcher
-    ),
-  {
-    ssr: false,
-    loading: () => <div className="size-9 rounded-md bg-muted/60" />,
-  }
-);
 
 // Cache user data at module level to prevent refetching on every navigation
 let cachedUser: User | null = null;
@@ -33,7 +19,6 @@ export function resetUserCache() {
 
 export function Header() {
   const router = useRouter();
-  const { t } = useLanguage();
   const { settings } = useSiteSettings();
   const [user, setUser] = useState<User | null>(cachedUser);
   const [loading, setLoading] = useState(!userFetched);
@@ -73,12 +58,11 @@ export function Header() {
 
   return (
     <header className="border-b">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+      <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <Link href="/" className="text-xl font-bold hover:text-primary">
           {settings?.site_name || 'Lite Blog'}
         </Link>
         <div className="flex items-center gap-4">
-          <LanguageSwitcher />
           <ThemeToggle />
           {loading ? (
             <div className="w-20 h-8 bg-muted animate-pulse rounded" />
@@ -100,14 +84,14 @@ export function Header() {
                   href="/admin"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  {t('nav.admin')}
+                  管理后台
                 </Link>
               )}
               <button
                 onClick={handleLogout}
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
-                {t('nav.logout')}
+                退出登录
               </button>
             </div>
           ) : (
@@ -116,13 +100,13 @@ export function Header() {
                 href="/login"
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
-                {t('nav.login')}
+                登录
               </Link>
               <Link
                 href="/register"
                 className="text-sm bg-primary text-primary-foreground px-3 py-1.5 rounded-md hover:bg-primary/90"
               >
-                {t('nav.register')}
+                注册
               </Link>
             </div>
           )}

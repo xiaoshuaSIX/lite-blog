@@ -6,7 +6,7 @@ export function Footer() {
   const { settings } = useSiteSettings();
 
   return (
-    <footer className="border-t mt-12">
+    <footer className="border-t mt-12 bg-background">
       <div className="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
         <p>
           &copy; {new Date().getFullYear()}{' '}

@@ -225,54 +225,58 @@ export default function AdminUsersPage() {
             <table className="w-full">
               <thead className="bg-muted">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.usersPage.table.email')}</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.usersPage.table.status')}</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.usersPage.table.emailVerified')}</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.usersPage.table.membership')}</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.usersPage.table.roles')}</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.usersPage.table.created')}</th>
-                  <th className="px-4 py-3 text-right text-sm font-medium">{t('admin.usersPage.table.actions')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[20%]">{t('admin.usersPage.table.email')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[10%]">{t('admin.usersPage.table.status')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[10%]">{t('admin.usersPage.table.emailVerified')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[15%]">{t('admin.usersPage.table.membership')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[15%]">{t('admin.usersPage.table.roles')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[10%]">{t('admin.usersPage.table.created')}</th>
+                  <th className="px-4 py-3 text-right text-sm font-medium w-[20%]">{t('admin.usersPage.table.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {users.map((user) => (
                   <tr key={user.id} className="hover:bg-muted/50">
-                    <td className="px-4 py-3">
-                      <div className="font-medium">{user.email}</div>
+                    <td className="px-4 py-3 align-top">
+                      <div className="font-medium break-words">{user.email}</div>
                     </td>
-                    <td className="px-4 py-3">{getStatusBadge(user.status)}</td>
-                    <td className="px-4 py-3">{getEmailBadge(user.email_verified)}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 align-top">{getStatusBadge(user.status)}</td>
+                    <td className="px-4 py-3 align-top">{getEmailBadge(user.email_verified)}</td>
+                    <td className="px-4 py-3 align-top">
                       <div className="flex flex-col gap-1">
                         {getMemberBadge(user)}
                         {user.member_expire_at && (
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
                             {t('admin.usersPage.membership.expires')}: {new Date(user.member_expire_at).toLocaleDateString()}
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3">{getRoleBadges(user.roles)}</td>
-                    <td className="px-4 py-3 text-sm text-muted-foreground">
+                    <td className="px-4 py-3 align-top">
+                      <div className="flex flex-wrap gap-1">
+                        {getRoleBadges(user.roles)}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-muted-foreground align-top whitespace-nowrap">
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-2">
+                    <td className="px-4 py-3 align-top">
+                      <div className="flex flex-wrap justify-end gap-2">
                         <button
                           onClick={() => openRoleModal(user)}
-                          className="text-sm text-primary hover:underline"
+                          className="text-sm text-primary hover:underline whitespace-nowrap"
                         >
                           {t('admin.usersPage.actions.roles')}
                         </button>
                         <button
                           onClick={() => openMembershipModal(user)}
-                          className="text-sm text-blue-600 hover:underline"
+                          className="text-sm text-blue-600 hover:underline whitespace-nowrap"
                         >
                           {t('admin.usersPage.actions.membership')}
                         </button>
                         <button
                           onClick={() => handleToggleStatus(user)}
-                          className={`text-sm hover:underline ${
+                          className={`text-sm hover:underline whitespace-nowrap ${
                             user.status === 0 ? 'text-yellow-600' : 'text-green-600'
                           }`}
                         >
@@ -282,7 +286,7 @@ export default function AdminUsersPage() {
                         </button>
                         <button
                           onClick={() => handleDelete(user)}
-                          className="text-sm text-destructive hover:underline"
+                          className="text-sm text-destructive hover:underline whitespace-nowrap"
                         >
                           {t('admin.usersPage.actions.delete')}
                         </button>

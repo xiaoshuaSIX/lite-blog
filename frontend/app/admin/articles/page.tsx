@@ -159,68 +159,73 @@ export default function AdminArticlesPage() {
         </Link>
       </div>
 
-      {/* Filters */}
-      <div className="mb-6 space-y-4">
-        {/* Search Bar */}
-        <form onSubmit={handleSearch} className="flex gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={t('admin.articlesPage.filters.searchPlaceholder')}
-              className="w-full pl-10 pr-4 py-2 border rounded-md bg-background"
-            />
-          </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-          >
-            {t('common.search')}
-          </button>
+      {/* Filters Toolbar */}
+      <div className="mb-8 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between border-b border-border pb-4">
+        {/* Search */}
+        <form onSubmit={handleSearch} className="relative w-full md:w-64 group">
+          <Search className="absolute left-0 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-foreground transition-colors" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder={t('admin.articlesPage.filters.searchPlaceholder')}
+            className="w-full pl-6 pr-4 py-2 bg-transparent border-none outline-none placeholder:text-muted-foreground/50 text-sm focus:ring-0"
+          />
         </form>
 
-        {/* Filter Dropdowns */}
-        <div className="flex flex-wrap gap-3">
-          <select
-            value={statusFilter}
-            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 border rounded-md bg-background"
-          >
-            <option value="all">{t('admin.articlesPage.filters.allStatuses')}</option>
-            <option value="0">{t('admin.articlesPage.status.draft')}</option>
-            <option value="1">{t('admin.articlesPage.status.published')}</option>
-          </select>
+        {/* Filter Group */}
+        <div className="flex flex-wrap items-center gap-2 md:gap-6 w-full md:w-auto">
+          {/* Status Filter */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider hidden md:inline-block">Status</span>
+            <select
+              value={statusFilter}
+              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+              className="bg-transparent border-none text-sm font-medium text-foreground hover:bg-muted/50 rounded px-2 py-1 cursor-pointer focus:ring-0"
+            >
+              <option value="all">All</option>
+              <option value="0">Draft</option>
+              <option value="1">Published</option>
+            </select>
+          </div>
 
-          <select
-            value={visibilityFilter}
-            onChange={(e) => { setVisibilityFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 border rounded-md bg-background"
-          >
-            <option value="all">{t('admin.articlesPage.filters.allVisibilities')}</option>
-            <option value="public_full">{t('admin.articlesPage.visibility.public')}</option>
-            <option value="member_full">{t('admin.articlesPage.visibility.members')}</option>
-            <option value="hidden">{t('admin.articlesPage.visibility.hidden')}</option>
-          </select>
+          {/* Visibility Filter */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider hidden md:inline-block">View</span>
+            <select
+              value={visibilityFilter}
+              onChange={(e) => { setVisibilityFilter(e.target.value); setPage(1); }}
+              className="bg-transparent border-none text-sm font-medium text-foreground hover:bg-muted/50 rounded px-2 py-1 cursor-pointer focus:ring-0"
+            >
+              <option value="all">All</option>
+              <option value="public_full">Public</option>
+              <option value="member_full">Member</option>
+              <option value="hidden">Hidden</option>
+            </select>
+          </div>
 
-          <select
-            value={pinnedFilter}
-            onChange={(e) => { setPinnedFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 border rounded-md bg-background"
-          >
-            <option value="all">{t('admin.articlesPage.filters.allPinned')}</option>
-            <option value="true">{t('admin.articlesPage.filters.pinnedOnly')}</option>
-            <option value="false">{t('admin.articlesPage.filters.notPinned')}</option>
-          </select>
+          {/* Pinned Filter */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider hidden md:inline-block">Pin</span>
+            <select
+              value={pinnedFilter}
+              onChange={(e) => { setPinnedFilter(e.target.value); setPage(1); }}
+              className="bg-transparent border-none text-sm font-medium text-foreground hover:bg-muted/50 rounded px-2 py-1 cursor-pointer focus:ring-0"
+            >
+              <option value="all">All</option>
+              <option value="true">Pinned</option>
+              <option value="false">Normal</option>
+            </select>
+          </div>
 
+          {/* Clear Button */}
           {(searchTerm || statusFilter !== 'all' || visibilityFilter !== 'all' || pinnedFilter !== 'all') && (
             <button
               onClick={handleClearFilters}
-              className="px-3 py-2 border rounded-md hover:bg-accent flex items-center gap-2"
+              className="ml-auto md:ml-0 p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors"
+              title={t('admin.articlesPage.filters.clearFilters')}
             >
               <X className="w-4 h-4" />
-              {t('admin.articlesPage.filters.clearFilters')}
             </button>
           )}
         </div>
@@ -249,59 +254,61 @@ export default function AdminArticlesPage() {
             <table className="w-full">
               <thead className="bg-muted">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.articlesPage.table.title')}</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.articlesPage.table.status')}</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.articlesPage.table.visibility')}</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.articlesPage.table.pinned')}</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">{t('admin.articlesPage.table.created')}</th>
-                  <th className="px-4 py-3 text-right text-sm font-medium">{t('admin.articlesPage.table.actions')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[35%]">{t('admin.articlesPage.table.title')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[10%]">{t('admin.articlesPage.table.status')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[10%]">{t('admin.articlesPage.table.visibility')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[10%]">{t('admin.articlesPage.table.pinned')}</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium w-[10%]">{t('admin.articlesPage.table.created')}</th>
+                  <th className="px-4 py-3 text-right text-sm font-medium w-[25%]">{t('admin.articlesPage.table.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {articles.map((article) => (
                   <tr key={article.id} className="hover:bg-muted/50">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        {article.is_pinned && (
-                          <Pin className="w-4 h-4 text-primary shrink-0 fill-primary/20" />
-                        )}
-                        <div>
-                          <div className="font-medium">{article.title}</div>
-                          <div className="text-sm text-muted-foreground">/posts/{article.slug}</div>
+                    <td className="px-4 py-3 align-top">
+                      <div className="flex items-start gap-2">
+                        <div className="w-4 h-4 mt-0.5 shrink-0">
+                          {article.is_pinned && (
+                            <Pin className="w-4 h-4 text-primary fill-primary/20" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="font-medium break-words">{article.title}</div>
+                          <div className="text-sm text-muted-foreground truncate">/posts/{article.slug}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">{getStatusBadge(article.status)}</td>
-                    <td className="px-4 py-3">{getVisibilityBadge(article.visibility)}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 align-top">{getStatusBadge(article.status)}</td>
+                    <td className="px-4 py-3 align-top">{getVisibilityBadge(article.visibility)}</td>
+                    <td className="px-4 py-3 align-top">
                       {article.is_pinned ? (
-                        <span className="px-2 py-1 bg-primary/10 text-primary rounded text-xs">{t('admin.articlesPage.pinned.yes')}</span>
+                        <span className="px-2 py-1 bg-primary/10 text-primary rounded text-xs whitespace-nowrap">{t('admin.articlesPage.pinned.yes')}</span>
                       ) : (
-                        <span className="text-muted-foreground text-xs">{t('admin.articlesPage.pinned.no')}</span>
+                        <span className="text-muted-foreground text-xs whitespace-nowrap">{t('admin.articlesPage.pinned.no')}</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm text-muted-foreground">
+                    <td className="px-4 py-3 text-sm text-muted-foreground align-top whitespace-nowrap">
                       {new Date(article.created_at).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-2">
+                    <td className="px-4 py-3 align-top">
+                      <div className="flex flex-wrap justify-end gap-2">
                         <Link
                           href={`/admin/articles/${article.id}/edit`}
-                          className="text-sm text-primary hover:underline"
+                          className="text-sm text-primary hover:underline whitespace-nowrap"
                         >
                           {t('admin.articlesPage.actions.edit')}
                         </Link>
                         {article.status === 0 ? (
                           <button
                             onClick={() => handlePublish(article.id)}
-                            className="text-sm text-green-600 hover:underline"
+                            className="text-sm text-green-600 hover:underline whitespace-nowrap"
                           >
                             {t('admin.articlesPage.actions.publish')}
                           </button>
                         ) : (
                           <button
                             onClick={() => handleUnpublish(article.id)}
-                            className="text-sm text-yellow-600 hover:underline"
+                            className="text-sm text-yellow-600 hover:underline whitespace-nowrap"
                           >
                             {t('admin.articlesPage.actions.unpublish')}
                           </button>
@@ -309,21 +316,21 @@ export default function AdminArticlesPage() {
                         {article.is_pinned ? (
                           <button
                             onClick={() => handleUnpin(article.id)}
-                            className="text-sm text-orange-600 hover:underline"
+                            className="text-sm text-orange-600 hover:underline whitespace-nowrap"
                           >
                             {t('admin.articlesPage.actions.unpin')}
                           </button>
                         ) : (
                           <button
                             onClick={() => handlePin(article.id)}
-                            className="text-sm text-blue-600 hover:underline"
+                            className="text-sm text-blue-600 hover:underline whitespace-nowrap"
                           >
                             {t('admin.articlesPage.actions.pin')}
                           </button>
                         )}
                         <button
                           onClick={() => handleDelete(article.id)}
-                          className="text-sm text-destructive hover:underline"
+                          className="text-sm text-destructive hover:underline whitespace-nowrap"
                         >
                           {t('admin.articlesPage.actions.delete')}
                         </button>

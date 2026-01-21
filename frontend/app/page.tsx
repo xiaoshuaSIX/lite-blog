@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
-import { Pin, ArrowRight } from 'lucide-react';
+import { Pin, ArrowRight, LockKeyhole } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { HeroSection } from '@/components/home/hero-section';
@@ -25,38 +25,31 @@ async function getSiteSettings(): Promise<SiteSettings | null> {
 }
 
 function ArticleRow({ article }: { article: ArticleListItem }) {
+  // Use YYYY-MM-DD for fixed width and clean look
   const publishedDate = article.published_at
-    ? new Date(article.published_at).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })
+    ? new Date(article.published_at).toISOString().split('T')[0]
     : null;
 
   return (
     <Link
       href={`/posts/${article.slug}`}
-      className="group relative flex items-center justify-between gap-4 p-4 -mx-4 rounded-xl transition-all duration-300 hover:bg-accent/50 hover:backdrop-blur-md border border-transparent hover:border-border/50"
+      className="group flex items-baseline gap-6 py-2 -mx-4 px-4 rounded-md hover:bg-muted/50 transition-colors"
     >
-      <div className="flex items-center gap-3 min-w-0">
+      <span className="text-sm font-mono text-muted-foreground/60 w-24 shrink-0 tabular-nums text-right">
+        {publishedDate || 'Draft'}
+      </span>
+
+      <div className="flex items-baseline gap-2.5 min-w-0 flex-1">
         {article.is_pinned && (
-          <Pin className="w-4 h-4 text-primary shrink-0 fill-primary/20" />
+          <Pin className="w-3.5 h-3.5 text-foreground/70 shrink-0 translate-y-0.5" />
         )}
-        <h2 className="text-lg font-medium text-foreground/90 group-hover:text-primary transition-colors truncate">
+        
+        <h2 className="text-base font-medium text-foreground/90 group-hover:text-foreground transition-colors leading-snug">
           {article.title}
         </h2>
-      </div>
-
-      <div className="flex items-center gap-3 shrink-0">
+        
         {article.visibility === 'member_full' && (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 uppercase tracking-wider">
-            Member
-          </span>
-        )}
-        {publishedDate && (
-          <span className="text-sm text-muted-foreground font-mono group-hover:text-foreground/80 transition-colors">
-            {publishedDate}
-          </span>
+          <LockKeyhole className="w-3 h-3 text-muted-foreground/40 shrink-0 self-center translate-y-[1px]" />
         )}
       </div>
     </Link>
@@ -71,34 +64,33 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden">
-      {/* Ambient Background Glow */}
-      <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] -z-10 opacity-50 pointer-events-none mix-blend-screen" />
+      {/* Ambient Background Glow removed */}
 
       <Header />
 
-      <main className="flex-1 container max-w-3xl mx-auto px-6 py-12 md:py-24 relative z-10">
+      <main className="flex-1 container max-w-3xl mx-auto px-6 py-12 md:py-24">
         {/* Hero Section */}
-        <div className="mb-20 md:mb-32 text-center">
+        <div className="mb-20 md:mb-24">
           <HeroSection settings={settings} />
         </div>
 
         {/* Articles List */}
-        <section className="space-y-2">
-          <div className="flex items-center justify-between mb-6 px-2">
-            <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">
+        <section className="space-y-4">
+          <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
+            <h2 className="text-sm font-semibold text-foreground uppercase tracking-widest">
               Latest Writings
             </h2>
             <Link 
               href="/archive"
-              className="group flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               View All
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           
           {articles.length > 0 ? (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col">
               {articles.map((article) => (
                 <ArticleRow key={article.id} article={article} />
               ))}

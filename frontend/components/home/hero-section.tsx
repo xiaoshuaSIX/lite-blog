@@ -10,11 +10,11 @@ interface HeroSectionProps {
 export function HeroSection({ settings }: HeroSectionProps) {
 
   return (
-    <section className="text-center mb-12">
-      <h1 className="text-4xl font-bold mb-4">
+    <section className="text-center mb-16 md:mb-24">
+      <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-foreground">
         {settings?.home_title || 'Welcome to Lite Blog'}
       </h1>
-      <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
+      <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
         {settings?.home_subtitle || 'Discover amazing articles and insights'}
       </p>
 
