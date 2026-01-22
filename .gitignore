@@ -7,7 +7,12 @@ backend/.env
 frontend/.env.local
 
 # SQLite database
-backend/blog.db
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
+*.db
+*.db-shm
+*.db-wal
 
 # Backend build artifacts
 backend/bin/
