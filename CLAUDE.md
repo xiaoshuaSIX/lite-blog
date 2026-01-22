@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a role-based blog system with frontend (Next.js) and backend (Go). The system supports article publishing, reading, and permission-based content access control. Different user roles have different content visibility levels.
+Lite Blog is a modern, role-based blog system with a Next.js frontend and Go backend. The system features intelligent content preview/masking, article publishing, commenting, and comprehensive permission-based access control. It's designed to support membership-based content monetization with different visibility levels for different user tiers.
 
 ## User Roles & Permissions
 
-- **Guest**: Unauthenticated users, can only view first 50% of article content
-- **User**: Registered users, can view first 50% of content and post comments
-- **Member**: Paid users, can view full article content
-- **Admin**: Backend administrators with full access and management capabilities
+- **Guest**: Unauthenticated users, can view public articles with content preview based on article visibility settings
+- **User**: Registered users, can view content with preview (same as guest) and post comments (requires email verification)
+- **Member**: Paid users, can view full content of member-restricted articles
+- **Admin**: Backend administrators with full access to all content and management capabilities
 
 ## Architecture
 
@@ -32,57 +32,81 @@ This is a role-based blog system with frontend (Next.js) and backend (Go). The s
 ## Database Schema
 
 ### Core Tables
-- `users`: User accounts (id, username, email, password_hash, status, created_at)
+- `users`: User accounts (id, email, password_hash, email_verified, member_expire_at, status, created_at)
 - `roles`: Role definitions (id, code [guest/user/member/admin], name)
 - `user_roles`: User-role mappings
-- `permissions`: Permission definitions (id, code like "article.read_full")
+- `permissions`: Permission definitions (id, code like "article.manage")
 - `role_permissions`: Role-permission mappings
-- `articles`: Blog posts (id, title, slug, content, author_id, status, published_at)
+- `articles`: Blog posts (id, title, slug, content, author_id, visibility, preview_percentage, preview_min_chars, preview_smart_paragraph, is_pinned, status, published_at)
 - `comments`: Article comments (id, article_id, user_id, parent_id, content, is_deleted)
-- `memberships`: Membership status (user_id, level, expire_at)
+- `settings`: Site settings (id, key, value)
 
 ## Content Access Control Logic
 
-Articles are served with content masking based on user role:
-- **Guest/User**: Only first 50% of content is visible
-- **Member/Admin**: Full content is visible
+Articles support three visibility levels:
+- **hidden**: Only admin can see
+- **public_full**: Everyone can see full content
+- **member_full**: Members/Admin see full content, others see preview
 
-Backend should implement content masking logic similar to:
-```go
-func maskArticleContent(content string, role Role) (string, bool) {
-    if role == Member || role == Admin {
-        return content, true
-    }
-    runes := []rune(content)
-    half := len(runes) / 2
-    return string(runes[:half]), false
-}
-```
+### Preview Settings (per article)
+- `preview_percentage`: Percentage of content to show (default 30%)
+- `preview_min_chars`: Minimum characters to show (default 200)
+- `preview_smart_paragraph`: Whether to cut at paragraph boundaries (default true)
+
+### Implementation
+Backend implements smart content preview in `service/preview.go`:
+- Calculates preview length based on percentage and minimum characters
+- Optionally cuts at paragraph/sentence boundaries for better readability
+- Returns preview status flag for frontend to show "upgrade to member" prompts
 
 ## API Structure
 
 ### Authentication
-- `POST /api/auth/login`
-- `GET /api/auth/me`
-- `POST /api/auth/logout`
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/me` - Get current user info (requires auth)
+- `POST /api/auth/verify-email` - Verify email with token
+- `POST /api/auth/resend-verification` - Resend verification email (requires auth)
+
+### Site Settings (Public)
+- `GET /api/settings` - Get public site settings
 
 ### Articles (Public)
-- `GET /api/articles` - List articles with pagination
-- `GET /api/articles/:slug` - Get article detail (content masked by role)
+- `GET /api/articles` - List articles with pagination (optional auth for content preview)
+- `GET /api/articles/:slug` - Get article detail (content masked by role, optional auth)
 
 ### Articles (Admin)
-- `POST /api/admin/articles` - Create article
-- `PUT /api/admin/articles/:id` - Update article
-- `DELETE /api/admin/articles/:id` - Delete article
+- `GET /api/admin/articles` - List all articles (admin only)
+- `GET /api/admin/articles/:id` - Get article by ID (admin only)
+- `POST /api/admin/articles` - Create article (admin only)
+- `PUT /api/admin/articles/:id` - Update article (admin only)
+- `DELETE /api/admin/articles/:id` - Delete article (admin only)
+- `POST /api/admin/articles/:id/publish` - Publish article (admin only)
+- `POST /api/admin/articles/:id/unpublish` - Unpublish article (admin only)
+- `POST /api/admin/articles/:id/pin` - Pin article (admin only)
+- `POST /api/admin/articles/:id/unpin` - Unpin article (admin only)
 
 ### Comments
-- `GET /api/articles/:id/comments` - List comments
-- `POST /api/articles/:id/comments` - Create comment (requires login)
+- `GET /api/comments/article/:articleId` - List comments for an article (optional auth)
+- `POST /api/comments/article/:articleId` - Create comment (requires auth)
 - `DELETE /api/admin/comments/:id` - Delete comment (admin only)
 
+### Users (Admin)
+- `GET /api/admin/users` - List all users (admin only)
+- `GET /api/admin/users/:id` - Get user by ID (admin only)
+- `PUT /api/admin/users/:id/status` - Update user status (admin only)
+- `PUT /api/admin/users/:id/membership` - Update user membership (admin only)
+- `POST /api/admin/users/:id/roles` - Assign role to user (admin only)
+- `DELETE /api/admin/users/:id/roles` - Remove role from user (admin only)
+- `DELETE /api/admin/users/:id` - Delete user (admin only)
+
 ### Roles & Permissions (Admin)
-- `GET /api/admin/roles`
-- `PUT /api/admin/roles/:id/permissions`
+- `GET /api/admin/roles` - Get all roles (admin only)
+
+### Site Settings (Admin)
+- `GET /api/admin/settings` - Get site settings (admin only)
+- `PUT /api/admin/settings` - Update site settings (admin only)
 
 ## Backend Structure (Go)
 
@@ -92,12 +116,14 @@ cmd/server/main.go
 internal/
   api/handler/
   api/middleware/
+  api/router/
   service/
   repository/
   model/
   config/
-  auth/
-pkg/logger/
+pkg/
+  jwt/
+  logger/
 ```
 
 ### Middleware
@@ -122,8 +148,8 @@ app/
   posts/[slug]/         # Article detail page
   admin/                # Admin dashboard
     articles/           # Article management
-    comments/           # Comment management
-    roles/              # Role management
+    settings/           # Site settings management
+    users/              # User management
 ```
 
 ### Data Fetching
