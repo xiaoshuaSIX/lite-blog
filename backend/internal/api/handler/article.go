@@ -317,6 +317,9 @@ func (h *AdminArticleHandler) Update(c *gin.Context) {
 		return
 	}
 
+	// Debug: Log received preview percentage
+	println("[DEBUG] Update article - PreviewPercentage:", req.PreviewPercentage, "PreviewMinChars:", req.PreviewMinChars)
+
 	article, err := h.articleService.UpdateArticle(
 		uint(id),
 		req.Title,

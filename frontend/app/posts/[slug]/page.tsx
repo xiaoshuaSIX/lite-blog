@@ -75,9 +75,9 @@ export default async function ArticlePage({ params }: PageProps) {
           <BackButton />
         </div>
 
-        <article className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm md:p-10 relative overflow-hidden">
+        <article className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm p-5 md:p-10 relative overflow-hidden">
           {/* Article Header */}
-          <header className="mb-8">
+          <header className="mb-6 md:mb-8">
             <h1 className="text-2xl md:text-3xl font-semibold mb-3 leading-snug tracking-tight text-foreground">
               {article.title}
             </h1>
@@ -103,14 +103,19 @@ export default async function ArticlePage({ params }: PageProps) {
           <div className="relative">
             <div className="prose prose-neutral dark:prose-invert max-w-none 
               prose-headings:font-medium prose-headings:tracking-tight 
-              prose-h1:text-2xl prose-h1:leading-snug
-              prose-h2:text-xl prose-h2:leading-snug
-              prose-h3:text-lg prose-h3:leading-snug
-              prose-h4:text-base prose-h4:leading-snug
+              prose-h1:text-xl md:prose-h1:text-2xl prose-h1:leading-snug
+              prose-h2:text-lg md:prose-h2:text-xl prose-h2:leading-snug
+              prose-h3:text-base md:prose-h3:text-lg prose-h3:leading-snug
+              prose-h4:text-sm md:prose-h4:text-base prose-h4:leading-snug
               prose-h5:text-sm prose-h5:leading-snug
               prose-h6:text-xs prose-h6:leading-snug
+              prose-p:text-[15px] md:prose-p:text-base prose-p:leading-relaxed
               prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-              prose-img:rounded-lg prose-img:shadow-sm">
+              prose-img:rounded-lg prose-img:shadow-sm
+              prose-pre:text-sm prose-code:text-sm
+              prose-ul:text-[15px] md:prose-ul:text-base
+              prose-ol:text-[15px] md:prose-ol:text-base
+              prose-li:text-[15px] md:prose-li:text-base">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {article.content}
               </ReactMarkdown>
@@ -118,15 +123,15 @@ export default async function ArticlePage({ params }: PageProps) {
 
             {/* Paywall Overlay */}
             {article.is_preview && (
-              <div className="relative mt-12 pt-12 border-t border-dashed border-stone-200 dark:border-zinc-800">
-                <div className="text-center bg-stone-50 dark:bg-zinc-800/30 p-8 rounded-lg border border-stone-100 dark:border-zinc-800">
+              <div className="relative mt-8 md:mt-12 pt-8 md:pt-12 border-t border-dashed border-stone-200 dark:border-zinc-800">
+                <div className="text-center bg-stone-50 dark:bg-zinc-800/30 p-6 md:p-8 rounded-lg border border-stone-100 dark:border-zinc-800">
                   <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                     <LockKeyhole className="w-6 h-6 text-amber-600 dark:text-amber-500" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 text-foreground">
+                  <h3 className="text-lg md:text-xl font-semibold mb-2 text-foreground">
                     Member-only Content
                   </h3>
-                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                  <p className="text-sm md:text-base text-muted-foreground mb-6 max-w-md mx-auto">
                     The rest of this article is available exclusively to members. Sign in or upgrade to continue reading.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">

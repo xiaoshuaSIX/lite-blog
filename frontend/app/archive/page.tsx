@@ -37,9 +37,9 @@ export default function ArchivePage() {
     return (
       <Link
         href={`/posts/${article.slug}`}
-        className="group flex items-baseline gap-6 py-2 -mx-4 px-4 rounded-md hover:bg-muted/50 transition-colors"
+        className="group flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-3 sm:py-2 -mx-2 sm:-mx-4 px-2 sm:px-4 rounded-md hover:bg-muted/50 transition-colors"
       >
-        <span className="text-sm font-mono text-muted-foreground/60 w-24 shrink-0 tabular-nums text-right">
+        <span className="text-xs sm:text-sm font-mono text-muted-foreground/60 sm:w-24 shrink-0 tabular-nums sm:text-right">
           {publishedDate || 'Draft'}
         </span>
 
@@ -64,13 +64,13 @@ export default function ArchivePage() {
     <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden">
       <Header />
 
-      <main className="flex-1 container max-w-3xl mx-auto px-6 py-12 md:py-24">
+      <main className="flex-1 container max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-24">
         {/* Page Header */}
-        <div className="mb-12 border-b border-border pb-4">
-          <h1 className="text-xl font-bold mb-2">
+        <div className="mb-8 sm:mb-12 border-b border-border pb-4">
+          <h1 className="text-xl sm:text-2xl font-bold mb-2">
             {t('archive.title')}
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {articles.length} {articles.length === 1 ? 'post' : 'posts'} in total
           </p>
         </div>
@@ -78,7 +78,7 @@ export default function ArchivePage() {
         {/* Articles List */}
         <section className="space-y-1">
           {loading ? (
-            <div className="flex justify-center py-20">
+            <div className="flex justify-center py-12 sm:py-20">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-foreground/20"></div>
             </div>
           ) : articles.length > 0 ? (
@@ -88,8 +88,8 @@ export default function ArchivePage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20">
-              <p className="text-muted-foreground">No articles found yet.</p>
+            <div className="text-center py-12 sm:py-20">
+              <p className="text-sm sm:text-base text-muted-foreground">No articles found yet.</p>
             </div>
           )}
         </section>

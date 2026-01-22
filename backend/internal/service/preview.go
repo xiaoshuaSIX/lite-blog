@@ -38,7 +38,10 @@ func GeneratePreview(content string, cfg PreviewConfig) string {
 	// Calculate the target length based on percentage
 	targetLength := (totalRunes * cfg.Percentage) / 100
 
-	// Ensure minimum characters
+	// Ensure minimum characters (but respect 0% as "show nothing")
+	if cfg.Percentage == 0 {
+		return ""
+	}
 	if targetLength < cfg.MinChars {
 		targetLength = cfg.MinChars
 	}

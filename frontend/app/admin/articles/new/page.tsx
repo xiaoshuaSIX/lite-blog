@@ -5,8 +5,10 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { adminApi, CreateArticleRequest } from '@/lib/admin-api';
 import { ApiError } from '@/lib/api';
+import { useLanguage } from '@/providers/language-provider';
 
 export default function NewArticlePage() {
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<CreateArticleRequest>({
     title: '',
@@ -42,11 +44,11 @@ export default function NewArticlePage() {
 
     try {
       await adminApi.createArticle(formData);
-      toast.success('Article created successfully!');
+      toast.success(t('admin.articleEditor.createSuccess'));
       window.location.href = '/admin/articles';
     } catch (err) {
       const apiError = err as ApiError;
-      toast.error(apiError.error || 'Failed to create article');
+      toast.error(apiError.error || t('admin.articleEditor.createError'));
     } finally {
       setLoading(false);
     }
@@ -55,19 +57,19 @@ export default function NewArticlePage() {
   return (
     <div className="max-w-4xl">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">New Article</h1>
+        <h1 className="text-3xl font-bold">{t('admin.articleEditor.newArticle')}</h1>
         <Link
           href="/admin/articles"
           className="text-sm text-muted-foreground hover:text-foreground"
         >
-          Cancel
+          {t('admin.articleEditor.cancel')}
         </Link>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <label htmlFor="title" className="text-sm font-medium">
-            Title
+            {t('admin.articleEditor.title')}
           </label>
           <input
             id="title"
@@ -76,13 +78,13 @@ export default function NewArticlePage() {
             onChange={handleTitleChange}
             required
             className="w-full px-3 py-2 border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-            placeholder="Article title"
+            placeholder={t('admin.articleEditor.titlePlaceholder')}
           />
         </div>
 
         <div className="space-y-2">
           <label htmlFor="slug" className="text-sm font-medium">
-            Slug
+            {t('admin.articleEditor.slug')}
           </label>
           <input
             id="slug"
@@ -91,16 +93,16 @@ export default function NewArticlePage() {
             onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
             required
             className="w-full px-3 py-2 border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-            placeholder="article-slug"
+            placeholder={t('admin.articleEditor.slugPlaceholder')}
           />
           <p className="text-xs text-muted-foreground">
-            URL: /posts/{formData.slug || 'article-slug'}
+            {t('admin.articleEditor.urlPreview')}: /posts/{formData.slug || t('admin.articleEditor.slugPlaceholder')}
           </p>
         </div>
 
         <div className="space-y-2">
           <label htmlFor="content" className="text-sm font-medium">
-            Content
+            {t('admin.articleEditor.content')}
           </label>
           <textarea
             id="content"
@@ -109,14 +111,14 @@ export default function NewArticlePage() {
             required
             rows={15}
             className="w-full px-3 py-2 border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary font-mono text-sm"
-            placeholder="Write your article content here... (Markdown supported)"
+            placeholder={t('admin.articleEditor.contentPlaceholder')}
           />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
             <label htmlFor="visibility" className="text-sm font-medium">
-              Visibility
+              {t('admin.articleEditor.visibility')}
             </label>
             <select
               id="visibility"
@@ -124,15 +126,15 @@ export default function NewArticlePage() {
               onChange={(e) => setFormData(prev => ({ ...prev, visibility: e.target.value as CreateArticleRequest['visibility'] }))}
               className="w-full px-3 py-2 border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              <option value="public_full">Public - Everyone can read full content</option>
-              <option value="member_full">Members Only - Others see preview</option>
-              <option value="hidden">Hidden - Admin only</option>
+              <option value="public_full">{t('admin.articleEditor.visibilityPublic')}</option>
+              <option value="member_full">{t('admin.articleEditor.visibilityMember')}</option>
+              <option value="hidden">{t('admin.articleEditor.visibilityHidden')}</option>
             </select>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="preview_percentage" className="text-sm font-medium">
-              Preview Percentage
+              {t('admin.articleEditor.previewPercentage')}
             </label>
             <input
               id="preview_percentage"
@@ -140,11 +142,14 @@ export default function NewArticlePage() {
               min="0"
               max="100"
               value={formData.preview_percentage}
-              onChange={(e) => setFormData(prev => ({ ...prev, preview_percentage: parseInt(e.target.value) }))}
+              onChange={(e) => {
+                const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                setFormData(prev => ({ ...prev, preview_percentage: isNaN(val) ? 0 : val }));
+              }}
               className="w-full px-3 py-2 border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <p className="text-xs text-muted-foreground">
-              Percentage of content to show in preview (0-100)
+              {t('admin.articleEditor.previewPercentageHint')}
             </p>
           </div>
         </div>
@@ -158,7 +163,7 @@ export default function NewArticlePage() {
             className="rounded"
           />
           <label htmlFor="preview_smart_paragraph" className="text-sm">
-            Smart paragraph cutting (cut at natural paragraph breaks)
+            {t('admin.articleEditor.smartParagraph')}
           </label>
         </div>
 
@@ -168,13 +173,13 @@ export default function NewArticlePage() {
             disabled={loading}
             className="bg-primary text-primary-foreground px-6 py-2 rounded-md hover:bg-primary/90 disabled:opacity-50"
           >
-            {loading ? 'Creating...' : 'Create Article'}
+            {loading ? t('admin.articleEditor.creating') : t('admin.articleEditor.createButton')}
           </button>
           <Link
             href="/admin/articles"
             className="px-6 py-2 border rounded-md hover:bg-muted"
           >
-            Cancel
+            {t('admin.articleEditor.cancel')}
           </Link>
         </div>
       </form>

@@ -33,9 +33,9 @@ function ArticleRow({ article }: { article: ArticleListItem }) {
   return (
     <Link
       href={`/posts/${article.slug}`}
-      className="group flex items-baseline gap-6 py-2 -mx-4 px-4 rounded-md hover:bg-muted/50 transition-colors"
+      className="group flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-3 sm:py-2 -mx-2 sm:-mx-4 px-2 sm:px-4 rounded-md hover:bg-muted/50 transition-colors"
     >
-      <span className="text-sm font-mono text-muted-foreground/60 w-24 shrink-0 tabular-nums text-right">
+      <span className="text-xs sm:text-sm font-mono text-muted-foreground/60 sm:w-24 shrink-0 tabular-nums sm:text-right">
         {publishedDate || 'Draft'}
       </span>
 
@@ -68,24 +68,24 @@ export default async function Home() {
 
       <Header />
 
-      <main className="flex-1 container max-w-3xl mx-auto px-6 py-12 md:py-24">
+      <main className="flex-1 container max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-24">
         {/* Hero Section */}
-        <div className="mb-20 md:mb-24">
+        <div className="mb-12 sm:mb-16 md:mb-24">
           <HeroSection settings={settings} />
         </div>
 
         {/* Articles List */}
         <section className="space-y-4">
-          <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
-            <h2 className="text-sm font-semibold text-foreground uppercase tracking-widest">
+          <div className="flex items-center justify-between mb-6 sm:mb-8 pb-4 border-b border-border">
+            <h2 className="text-xs sm:text-sm font-semibold text-foreground uppercase tracking-widest">
               Latest Writings
             </h2>
             <Link 
               href="/archive"
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               View All
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
             </Link>
           </div>
           
@@ -96,8 +96,8 @@ export default async function Home() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-card/40 backdrop-blur-sm rounded-2xl border border-border/50">
-              <p className="text-muted-foreground">No articles found yet.</p>
+            <div className="text-center py-12 sm:py-20 bg-card/40 backdrop-blur-sm rounded-2xl border border-border/50">
+              <p className="text-sm sm:text-base text-muted-foreground">No articles found yet.</p>
             </div>
           )}
         </section>
