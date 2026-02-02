@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import { remarkMark } from '@/lib/remark-mark';
 import { LockKeyhole } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -65,9 +67,7 @@ export default async function ArticlePage({ params }: PageProps) {
         backgroundSize: '24px 24px',
       }}
     >
-      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm">
-        <Header />
-      </div>
+      <Header />
 
       <main className="flex-1 container max-w-3xl mx-auto px-4 py-6 md:py-8">
         {/* Back button */}
@@ -116,7 +116,18 @@ export default async function ArticlePage({ params }: PageProps) {
               prose-ul:text-[15px] md:prose-ul:text-base
               prose-ol:text-[15px] md:prose-ol:text-base
               prose-li:text-[15px] md:prose-li:text-base">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkMark]}
+                rehypePlugins={[rehypeRaw]}
+                components={{
+                  mark: ({ ...props }) => (
+                    <mark
+                      className="bg-yellow-200 dark:bg-yellow-500/20 text-yellow-900 dark:text-yellow-200 px-1 rounded mx-0.5"
+                      {...props}
+                    />
+                  ),
+                }}
+              >
                 {article.content}
               </ReactMarkdown>
             </div>

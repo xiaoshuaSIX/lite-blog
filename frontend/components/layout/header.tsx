@@ -24,6 +24,7 @@ export function Header() {
   const [user, setUser] = useState<User | null>(cachedUser);
   const [loading, setLoading] = useState(!userFetched);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuMounted, setMobileMenuMounted] = useState(false);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -56,6 +57,21 @@ export function Header() {
     };
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      setMobileMenuMounted(true);
+      return;
+    }
+
+    if (!mobileMenuMounted) return;
+
+    const timeout = window.setTimeout(() => {
+      setMobileMenuMounted(false);
+    }, 220);
+
+    return () => window.clearTimeout(timeout);
+  }, [mobileMenuOpen, mobileMenuMounted]);
 
   const handleLogout = async () => {
     try {
@@ -158,9 +174,19 @@ export function Header() {
       </header>
 
       {/* Mobile Menu Full Screen Overlay */}
-      {mobileMenuOpen && (
-        <div className="md:hidden fixed top-14 left-0 right-0 bottom-0 bg-background z-50 overflow-y-auto border-t">
-          <div className="container mx-auto px-6 py-8 flex flex-col gap-6">
+      {mobileMenuMounted && (
+        <div
+          className={`md:hidden fixed top-14 left-0 right-0 bottom-0 bg-background z-50 overflow-y-auto border-t transition-all duration-200 ease-out ${
+            mobileMenuOpen
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 -translate-y-2 pointer-events-none"
+          }`}
+        >
+          <div
+            className={`container mx-auto px-6 py-8 flex flex-col gap-6 transition-all duration-200 ease-out ${
+              mobileMenuOpen ? "opacity-100" : "opacity-0"
+            }`}
+          >
             {loading ? (
               <div className="w-full h-10 bg-muted animate-pulse rounded-lg" />
             ) : user ? (
