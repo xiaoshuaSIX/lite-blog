@@ -25,34 +25,34 @@ async function getSiteSettings(): Promise<SiteSettings | null> {
 }
 
 function ArticleRow({ article }: { article: ArticleListItem }) {
-  // Use YYYY-MM-DD for fixed width and clean look
   const publishedDate = article.published_at
-    ? new Date(article.published_at).toISOString().split('T')[0]
+    ? new Date(article.published_at).toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: '2-digit',
+      })
     : null;
 
   return (
-    <Link
-      href={`/posts/${article.slug}`}
-      className="group flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-3 sm:py-2 -mx-2 sm:-mx-4 px-2 sm:px-4 rounded-md hover:bg-muted/50 transition-colors"
-    >
-      <span className="text-xs sm:text-sm font-mono text-muted-foreground/60 sm:w-24 shrink-0 tabular-nums sm:text-right">
+    <div className="flex items-start gap-3">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-muted/70 text-pink-500 text-xs sm:text-sm font-mono tabular-nums shrink-0">
         {publishedDate || 'Draft'}
       </span>
-
-      <div className="flex items-baseline gap-2.5 min-w-0 flex-1">
-        {article.is_pinned && (
-          <Pin className="w-3.5 h-3.5 text-foreground/70 shrink-0 translate-y-0.5" />
-        )}
-        
-        <h2 className="text-base font-medium text-foreground/90 group-hover:text-foreground transition-colors leading-snug">
+      <Link
+        href={`/posts/${article.slug}`}
+        className="min-w-0 text-base sm:text-lg text-primary underline underline-offset-4 decoration-border/80 hover:decoration-primary transition-colors"
+      >
+        <span className="inline-flex items-center gap-1.5">
+          {article.is_pinned && (
+            <Pin className="w-3.5 h-3.5 text-foreground/70 shrink-0" />
+          )}
           {article.title}
-        </h2>
-        
-        {article.visibility === 'member_full' && (
-          <LockKeyhole className="w-3 h-3 text-muted-foreground/40 shrink-0 self-center translate-y-[1px]" />
-        )}
-      </div>
-    </Link>
+          {article.visibility === 'member_full' && (
+            <LockKeyhole className="w-3.5 h-3.5 text-muted-foreground/70 shrink-0" />
+          )}
+        </span>
+      </Link>
+    </div>
   );
 }
 
@@ -90,11 +90,13 @@ export default async function Home() {
           </div>
           
           {articles.length > 0 ? (
-            <div className="flex flex-col">
+            <ul className="list-disc pl-5 sm:pl-6 space-y-4 sm:space-y-5 marker:text-foreground/80">
               {articles.map((article) => (
-                <ArticleRow key={article.id} article={article} />
+                <li key={article.id}>
+                  <ArticleRow article={article} />
+                </li>
               ))}
-            </div>
+            </ul>
           ) : (
             <div className="text-center py-12 sm:py-20 bg-card/40 backdrop-blur-sm rounded-2xl border border-border/50">
               <p className="text-sm sm:text-base text-muted-foreground">No articles found yet.</p>

@@ -69,9 +69,9 @@ export default async function ArticlePage({ params }: PageProps) {
     >
       <Header />
 
-      <main className="flex-1 container max-w-3xl mx-auto px-4 py-6 md:py-8">
+      <main className="flex-1 container max-w-3xl mx-auto px-4 pt-10 sm:pt-14 md:pt-20 pb-8 md:pb-12">
         {/* Back button */}
-        <div className="mb-4">
+        <div className="mb-6">
           <BackButton />
         </div>
 
