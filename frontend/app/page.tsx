@@ -34,23 +34,24 @@ function ArticleRow({ article }: { article: ArticleListItem }) {
     : null;
 
   return (
-    <div className="flex items-start gap-3">
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-muted/70 text-pink-500 text-xs sm:text-sm font-mono tabular-nums shrink-0">
-        {publishedDate || 'Draft'}
-      </span>
+    <div className="flex items-start gap-2 sm:gap-3">
+      <span className="w-1.5 h-1.5 mt-2.5 rounded-full bg-foreground/80 shrink-0" />
       <Link
         href={`/posts/${article.slug}`}
-        className="min-w-0 text-base sm:text-lg text-primary underline underline-offset-4 decoration-border/80 hover:decoration-primary transition-colors"
+        className="min-w-0 text-base sm:text-lg text-primary underline underline-offset-4 decoration-border/80 hover:decoration-primary transition-colors leading-snug"
       >
-        <span className="inline-flex items-center gap-1.5">
+        <span className="inline-flex items-center gap-1.5 sm:gap-2 mr-1.5 align-middle">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-muted/70 text-pink-500 text-xs sm:text-sm font-mono tabular-nums no-underline">
+            {publishedDate || 'Draft'}
+          </span>
           {article.is_pinned && (
-            <Pin className="w-3.5 h-3.5 text-foreground/70 shrink-0" />
+            <Pin className="w-3.5 h-3.5 text-foreground/70" />
           )}
-          {article.title}
           {article.visibility === 'member_full' && (
-            <LockKeyhole className="w-3.5 h-3.5 text-muted-foreground/70 shrink-0" />
+            <LockKeyhole className="w-3.5 h-3.5 text-muted-foreground/70" />
           )}
         </span>
+        {article.title}
       </Link>
     </div>
   );
@@ -90,7 +91,7 @@ export default async function Home() {
           </div>
           
           {articles.length > 0 ? (
-            <ul className="list-disc pl-5 sm:pl-6 space-y-4 sm:space-y-5 marker:text-foreground/80">
+            <ul className="list-none pl-0 space-y-4 sm:space-y-5">
               {articles.map((article) => (
                 <li key={article.id}>
                   <ArticleRow article={article} />
